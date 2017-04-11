@@ -15,4 +15,3 @@ a list mapping R file names to github download urls
 \description{
 Get R file name and url from github
 }
-

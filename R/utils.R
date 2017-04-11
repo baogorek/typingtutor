@@ -1,4 +1,19 @@
 
+count_words <- function(string) {
+  nchar(string) / 5
+}
+
+get_gross_wpm <- function(string, time_in_sec) {
+  60 * count_words(string) / time_in_sec
+}
+
+get_errors_per_min <- function(entered_string, true_string, time_in_sec) {
+  60 * adist(entered_string, true_string)[1, 1] / time_in_sec
+}
+
+get_net_wpm <- function(gross_wpm, errors_per_min) {
+  gross_wpm - errors_per_min
+}
 
 
 #' Get R file name and url from github
