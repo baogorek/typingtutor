@@ -11,10 +11,14 @@ get_errors_per_min <- function(entered_string, true_string, time_in_sec) {
   60 * adist(entered_string, true_string)[1, 1] / time_in_sec
 }
 
-get_net_wpm <- function(gross_wpm, errors_per_min) {
-  gross_wpm - errors_per_min
-}
 
+#get_net_wpm <- function(gross_wpm, errors_per_min) {
+#  gross_wpm - errors_per_min
+#}
+
+get_net_wpm <- function(word_ct, errors_ct, time_in_sec) {
+  60 * (word_ct - errors_ct) / time_in_sec
+}
 
 #' Get R file name and url from github
 #'
@@ -30,7 +34,6 @@ get_r_files_from_github <- function(repo = "hadley/dplyr") {
   } 
   r_files
 }
-
 
 display_files_for_selection <- function(r_files, max_char_per_line) {
   cat("--------------------------------------------\n")
@@ -58,11 +61,11 @@ get_user_choice <- function(r_files, max_char_per_line = 30) {
   display_files_for_selection(r_files, max_char_per_line)
   choice <- as.integer(readline())
   if (choice %in% 1:length(r_files)) {
-    cat("User selected", names(r_files)[choice], "\n")
+    cat("\nUser selected", names(r_files)[choice], "\n\n")
   }
   else {
     choice <- sample(1:length(r_files), size = 1)
-    cat("Randomly selected", names(r_files)[choice], "\n")
+    cat("\nRandomly selected", names(r_files)[choice], "\n\n")
   }
   choice
 }
@@ -80,49 +83,45 @@ type_contents <- function(r_files, choice) {
   results_df <- data.frame()
   for (j in 1:length(expressions)) {
     expression_name <- deparse(expressions[[j]][[2]])
-    cat("On expression", j, ":", expression_name, "\n")
+    cat("\n On expression", j, "of", length(expressions), ":",
+        expression_name, "\n\n")
     contents <- deparsed_exprs[[j]]
     n_lines <- length(contents)
  
     expr_df <- data.frame(expression = rep(expression_name, n_lines),
-                          time_to_type = numeric(n_lines),
-                          dist_to_truth = numeric(n_lines),
+                          time_in_sec = numeric(n_lines),
+                          errors_ct = numeric(n_lines),
                           word_ct = numeric(n_lines),
-                          char_ct = numeric(n_lines))
+                          net_wpm = numeric(n_lines))
 
     for(i in 1:n_lines) {
       line <- contents[i]
-
-      cat("N words:", length(strsplit(line, " ")[[1]]), "\n")
-      cat("N chars:", nchar(line), "\n")
 
       t0 <- proc.time()
       cat(paste0(line,"\n"))
       input <- trimws(readline())
       delta <- proc.time() - t0
 
-      cat("\nTime elapsed:", delta["elapsed"], "\n")
-      cat("\nstring distance", adist(trimws(line), input), "\n") 
-
-      expr_df[i, "time_to_type"] <- delta["elapsed"]
-      expr_df[i, "dist_to_truth"] <- adist(trimws(line), input)
-      expr_df[i, "word_ct"] <- length(strsplit(line, " ")[[1]])
-      expr_df[i, "char_ct"] <- nchar(line)
+      expr_df[i, "time_in_sec"] <- delta["elapsed"]
+      expr_df[i, "errors_ct"] <- adist(trimws(line), input)[1, 1]
+      expr_df[i, "word_ct"] <- count_words(line)
+      expr_df[i, "net_wpm"] <- with(expr_df[i, ],
+                                    get_net_wpm(word_ct, errors_ct,
+                                                time_in_sec))
+    cat("\nNet WPM for last line:", round(expr_df[i, "net_wpm"]), "\n\n")
     }
     results_df <- rbind(results_df, expr_df)
   }
   results_df
 }
 
-# TODO: See these typing equations
-# https://www.speedtypingonline.com/typing-equations 
-
-evaluate_results <- function(results_df, error_penalty = 3) {
+evaluate_results <- function(results_df) {
   results_df <- results_df[results_df$word_ct > 0, ]
-  raw_words_per_minute <- 60 * sum(results_df$word_ct) / sum(results_df$time_to_type)
-  adj_words_per_minute <- 60 * sum(results_df$word_ct) / (
-    sum(results_df$time_to_type) + error_penalty * sum(results_df$dist_to_truth))
-  return(c(raw_words_per_minute, adj_words_per_minute))
+ 
+  overall_net_wpm <- with(results_df,
+                          get_net_wpm(sum(word_ct), sum(errors_ct),
+                                      sum(time_in_sec)))
+  return(overall_net_wpm)
 }
 
 get_storage_location <- function() {
@@ -137,13 +136,13 @@ get_storage_location <- function() {
       storage_location <- .typing_storage
     }
   } else {
-    cat("Where would you like to store your results?\n")
+    cat("\nWhere would you like to store your results?\n")
     cat("local file path (press <Enter> to bypass saving):")
     valid_path_entered <- FALSE
     while (!valid_path_entered) {
       storage_location <- gsub("\"|'", '', readline())
       if (storage_location == "") {
-        cat("Progress will not be saved\n")
+        cat("\nProgress will not be saved\n")
         valid_path_entered <- TRUE
       } else if (file.exists(storage_location)) {
         cat("Storing typing results in", storage_location, "\n")
@@ -153,8 +152,9 @@ get_storage_location <- function() {
         cat(storage_location, "is not a valid file path. Please try again: ")
       }
     }
-    cat("To avoid this message in the future, set .typing_storage to a valid")
+    cat("\nTo avoid this message in the future, set .typing_storage to a valid")
     cat("file path in your .Rprofile\n")
+    Sys.sleep(3)
   }
   return(storage_location)
 }
@@ -174,27 +174,37 @@ get_history_from_storage <- function(storage_loc) {
 get_history <- function(storage_loc) {
   if ("history_df" %in% names(.GlobalEnv)) {
     history <- history_df
-    cat("reusing typing history from current session\n")
+    cat("\nUsing typing history from active session\n")
   } else {
     history <- get_history_from_storage(storage_loc)
   }
   history
 }
 
+perform_countdown <- function(start_pos = 3, pause = 1) {
+  cat("Ready?\n")
+  for (i in start_pos:1) {
+    cat(i, "\n")
+    Sys.sleep(pause)
+  }
+  cat("GO!\n")
+}
+
 #' @export
 type_github <- function(repo = "hadley/dplyr") {
   storage_location <- get_storage_location()
   history_df <- get_history(storage_location)
+  cat("\n...Getting R file information from Github\n")
   r_files <- get_r_files_from_github(repo)
   user_choice <- get_user_choice(r_files)
+  perform_countdown(3, .7)
   results_df <- type_contents(r_files, user_choice)  
-  evaluation <- evaluate_results(results_df)
+  net_wpm <- evaluate_results(results_df)
+  cat("\n\nOverall Net WPM:", net_wpm, "\n")
   history_df <<- rbind(history_df,
                        data.frame(sys_time = as.numeric(Sys.time()),
                                   repo = repo,
                                   r_file = names(r_files)[user_choice],
-                                  wpm = evaluation[1]))
-  print("Better evaluation metrics coming")
-  print(history_df)
+                                  wpm = net_wpm))
 }
 
