@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Sample "Hello, World" Application</title>
+    <title>The typingtutor page</title>
 
     <script src="https://www.gstatic.com/firebasejs/3.8.0/firebase.js"></script>
     <script>
@@ -15,28 +15,43 @@
       };
       firebase.initializeApp(config);
     </script>
+    <script src="https://cdn.firebase.com/libs/firebaseui/1.0.1/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet"
+          href="https://cdn.firebase.com/libs/firebaseui/1.0.1/firebaseui.css" />
 
+    <script type="text/javascript">
+    // FirebaseUI config
+
+      var uiConfig = {
+        signInSuccessUrl: '<url-to-redirect-to-on-success>',
+        signInOptions: [
+          // Leave the lines as is for the providers you want to offer your users.
+          firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+          firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+          firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+          firebase.auth.GithubAuthProvider.PROVIDER_ID,
+          firebase.auth.EmailAuthProvider.PROVIDER_ID
+        ],
+        // Terms of service url.
+        tosUrl: 'https://baogorek.github.io/typingtutor/'
+      };
+
+      // Initialize the FirebaseUI Widget using Firebase.
+      var ui = new firebaseui.auth.AuthUI(firebase.auth());
+      // The start method will wait until the DOM is loaded.
+      ui.start('#firebaseui-auth-container', uiConfig);
+    </script>
   </head>
 
-  <body bgcolor=white>
+  <body>
+    <h1>Leaderboard for typing tutor</h1>
+    <div id="firebaseui-auth-container"></div>
 
-    <table border="0" cellpadding="10">
-      <tr>
-        <td>
-          <img src="images/springsource.png">
-        </td>
-        <td>
-          <h1>Sample "Hello, World" Application</h1>
-        </td>
-      </tr>
-    </table>
+    <p>
+    This page's address is currently https://baogorek.github.io/typingtutor/.
+    It will be using features from https://console.firebase.google.com/.
+    </p>
 
-    <p>This is the home page for the HelloWorld Web application. </p>
-    <p>To prove that they work, you can execute either of the following links:
-    <ul>
-      <li>To a <a href="hello.jsp">JSP page</a>.
-      <li>To a <a href="hello">servlet</a>.
-    </ul>
 
   </body>
 </html>
