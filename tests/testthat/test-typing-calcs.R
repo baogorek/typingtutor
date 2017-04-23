@@ -15,5 +15,5 @@ test_that("Typing calculations work as expected", {
   expect_equal(get_gross_wpm(two_hundred_chars, 30), 80)
   expect_equal(get_errors_per_min(two_hundred_chars, mistakes, 30), 4) 
 
-  expect_equal(get_net_wpm(80, 4), 76)
+  expect_equal(get_net_wpm(80, 4, 60), 76)
 })

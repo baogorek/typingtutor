@@ -9,9 +9,12 @@ Description: typingtutor is an R package that provides typing exercises based
 Depends:
     R (>= 3.3.2)
 Imports:
+    httr,
     crayon
+Suggests:
+    testthat,
+    covr
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
-Suggests: testthat
