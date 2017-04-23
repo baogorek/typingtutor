@@ -8,6 +8,8 @@ Description: typingtutor is an R package that provides typing exercises based
     gaining familiarity with the code underlying successful R packages.
 Depends:
     R (>= 3.3.2)
+Imports:
+    crayon
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

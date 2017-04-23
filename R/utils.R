@@ -190,6 +190,21 @@ perform_countdown <- function(start_pos = 3, pause = 1) {
   cat("GO!\n")
 }
 
+#' Typing practice via R packages on Github
+#' 
+#' This function sends the user into an interactive loop that simulates
+#' typing a part of an actual R package on github. The standard
+#' words-per-minute calculations are presented to the user after each typed
+#' line and following the typing round.
+#'
+#' @param repo Which repo do you want to practice typing on ("hadley/dplyr") is
+#'             the default
+#'
+#' @examples
+#' cat(yellow("I am not really an example.\n"))
+#' cat(red("Does colored text show up in Travis CI?\n"))
+#' cat(green("Hopefully it does\n") 
+#'
 #' @export
 type_github <- function(repo = "hadley/dplyr") {
   storage_location <- get_storage_location()

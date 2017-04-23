@@ -1,5 +1,12 @@
 `typingtutor`: A typing tutor and code familiarizer for R
 =========================================================
+
+[![Build
+Status](https://travis-ci.org/baogorek/typingtutor.svg?branch=master)](https://travis-ci.org/baogorek/typingtutor)
+
+[![Coverage
+Status](https://img.shields.io/codecov/c/github/baogorek/typingtutor/master.svg)](https://codecov.io/github/baogorek/typingtutor?branch=master)
+
 *Only minimal functionality is currently available in this early package version*
 
 typingtutor is an R package that provides typing exercises based
