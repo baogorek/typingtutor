@@ -17,8 +17,8 @@ words-per-minute calculations are presented to the user after each typed
 line and following the typing round.
 }
 \examples{
-cat(crayon::yellow("I am not really an example.\\n"))
-cat(crayon::red("Does colored text show up in Travis CI?\\n"))
-cat(crayon::green("Hopefully it does\\n"))
+\dontrun{
+type_github()
+}
 
 }

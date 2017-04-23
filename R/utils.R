@@ -91,11 +91,13 @@ type_contents <- function(r_files, choice) {
                           net_wpm = numeric(n_lines))
 
     for(i in 1:n_lines) {
-      line <- contents[i]
+      line <- trimws(contents[i], "right") # trailing spaces can't hurt score
+      n_leading_spaces <- nchar(line) - nchar(trimws(line, "left")) 
+      space_buffer <- paste(rep(" ", n_leading_spaces), collapse = "")
 
       t0 <- proc.time()
-      cat(paste0(line,"\n"))
-      input <- trimws(readline())
+      cat(crayon::green(line), "\n")
+      input <- trimws(readline(space_buffer))
       delta <- proc.time() - t0
 
       expr_df[i, "time_in_sec"] <- delta["elapsed"]
@@ -197,9 +199,9 @@ perform_countdown <- function(start_pos = 3, pause = 1) {
 #'             the default
 #'
 #' @examples
-#' cat(crayon::yellow("I am not really an example.\n"))
-#' cat(crayon::red("Does colored text show up in Travis CI?\n"))
-#' cat(crayon::green("Hopefully it does\n"))
+#' \dontrun{
+#' type_github()
+#'}
 #'
 #' @export
 type_github <- function(repo = "hadley/dplyr") {
@@ -211,11 +213,10 @@ type_github <- function(repo = "hadley/dplyr") {
   perform_countdown(3, .7)
   results_df <- type_contents(r_files, user_choice)  
   net_wpm <- evaluate_results(results_df)
-  cat("\n\nOverall Net WPM:", net_wpm, "\n")
+  cat("\nOverall Net WPM:", net_wpm, "\n")
   history_df <<- rbind(history_df,
                        data.frame(sys_time = as.numeric(Sys.time()),
                                   repo = repo,
                                   r_file = names(r_files)[user_choice],
                                   wpm = net_wpm))
 }
-
