@@ -201,9 +201,9 @@ perform_countdown <- function(start_pos = 3, pause = 1) {
 #'             the default
 #'
 #' @examples
-#' cat(yellow("I am not really an example.\n"))
-#' cat(red("Does colored text show up in Travis CI?\n"))
-#' cat(green("Hopefully it does\n") 
+#' cat(crayon::yellow("I am not really an example.\n"))
+#' cat(crayon::red("Does colored text show up in Travis CI?\n"))
+#' cat(crayon::green("Hopefully it does\n"))
 #'
 #' @export
 type_github <- function(repo = "hadley/dplyr") {
