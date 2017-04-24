@@ -45,10 +45,9 @@
         // Query parameter name for sign in success url.
         queryParameterForSignInSuccessUrl: 'signInSuccessUrl',
         signInFlow: 'popup',
-        signInSuccessUrl: 'https://baogorek.github.io/typingtutor/',
+        signInSuccessUrl: 'https://baogorek.github.io/typingtutor/site/signed-in.html',
         signInOptions: [
           firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-          firebase.auth.FacebookAuthProvider.PROVIDER_ID,
           firebase.auth.GithubAuthProvider.PROVIDER_ID
         ],
         // Terms of service url.
@@ -74,5 +73,13 @@
 
     <div id="loader">Loading...</div>
 
+
+    https://developer.github.com/v3/oauth/
+
+    It looks like authorization using http should be pretty simple!
+    GET https://github.com/login/oauth/authorize
+
+    Here is my Github application:
+    https://github.com/settings/applications/519246
   </body>
 </html>
