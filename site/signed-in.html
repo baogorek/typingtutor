@@ -45,10 +45,10 @@
             });
 
           var database = firebase.database();
-          var userId = firebase.auth().currentUser.uid;
-          return firebase.database().ref('/typingtutor-9f7e9').once('score').then(
+          database.ref('/typingtutor-9f7e9').once('score').then(
               function(snapshot) {
-                document.getElementById('another-div').textContent = snapshot.val();
+                document.getElementById('another-div').textContent =
+                  JSON.stringify(snapshot.val());
               }
           );
 
