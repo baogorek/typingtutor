@@ -45,7 +45,7 @@
             });
 
           var dbRefObject = firebase.database().ref().child('object');
-          database.ref().on('value').then(
+          dbRefObject.on('value').then(
               function(snapshot) {
                 document.getElementById('another-div').textContent = JSON.stringify(snapshot.val());
                 console.log(snapshot.val());
