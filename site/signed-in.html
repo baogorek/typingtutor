@@ -43,9 +43,10 @@
                 providerData: providerData
               }, null, '  ');
             });
-
+          // Below, ref() gets you to the root, get's child right under base obj
           var dbRefObject = firebase.database().ref().child('object');
-          dbRefObject.on('value').then(
+          // use the value event, along with a callback function
+          dbRefObject.on('value',
               function(snapshot) {
                 document.getElementById('another-div').textContent = JSON.stringify(snapshot.val());
                 console.log(snapshot.val());
