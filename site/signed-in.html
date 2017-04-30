@@ -41,10 +41,10 @@
                 uid: uid,
                 accessToken: accessToken,
                 providerData: providerData
-              }, null, '  ');
+              }, null, '  \n\n\n');
             });
           // Below, ref() gets you to the root, get's child right under base obj
-          var dbRefObject = firebase.database().ref().child('object');
+          var dbRefObject = firebase.database().ref().child('test_obj');
           // use the value event, along with a callback function
           dbRefObject.on('value',
               function(snapshot) {
