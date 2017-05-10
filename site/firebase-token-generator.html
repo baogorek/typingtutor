@@ -28,21 +28,28 @@
       }
 
     initApp = function() {
-      var github_token = getParameterByName('github');
-      document.getElementById("github-token").textContent = github_token;
-      var credential = firebase.auth.GithubAuthProvider.credential(github_token);
 
-      firebase.auth().signInWithCredential(credential);
-      my_auth = firebase.auth();
-      my_user = my_auth.currentUser;
-      firebase_token = my_user.getToken().ra; 
+      var my_auth = firebase.auth();
+      var my_user = my_auth.currentUser;
+      var provider = new firebase.auth.GithubAuthProvider();
 
-      document.getElementById("firebase-token").textContent = firebase_token;
+      if (!my_user) {  // Not recommended - https://firebase.google.com/docs/auth/web/manage-users
+        my_auth.signInWithPopup(provider);
+        var my_user = my_auth.currentUser;
+      }
+ 
+      var fb_token = null;
+      my_user.getToken().then( // getToken returns a "promise"
+        function(accessToken) {
+           fb_token = accessToken;
+        });
+
+      document.getElementById("firebase-token").textContent = fb_token;
 
       var xmlHttp = new XMLHttpRequest();
-      the_url = "https://typingtutor-9f7e9.firebaseio.com/with_chris.json?auth=" + 
-                 firebase_token;
-      xmlHttp.open("GET", the_url, false); // false for synchronous request
+      var the_url = "https://typingtutor-9f7e9.firebaseio.com/with_chris.json?auth=" + 
+                 fb_token;
+      xmlHttp.open("GET", the_url, true); // false for synchronous request
       xmlHttp.send(null);
       document.getElementById("data-sample").textContent = 
         JSON.stringify(xmlHttp.responseText);
@@ -56,7 +63,6 @@
   </head>
   <body>
     <h1>The tokens will appear below</h1>
-    <div id="github-token"></div>
     <div id="firebase-token"></div>
     <div id="data-sample"></div>
   </body>

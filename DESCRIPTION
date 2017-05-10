@@ -10,7 +10,8 @@ Depends:
     R (>= 3.3.2)
 Imports:
     httr,
-    crayon
+    crayon,
+    rvest
 Suggests:
     testthat,
     covr
