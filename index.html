@@ -6,7 +6,6 @@
 
     <script src="https://www.gstatic.com/firebasejs/3.8.0/firebase.js"></script>
     <script>
-      // Initialize Firebase
       var config = {
         apiKey: "AIzaSyDFLZi6KGXURw8nibcJhGhN23-4vbMNV24",
         authDomain: "typingtutor-9f7e9.firebaseapp.com",
@@ -17,32 +16,27 @@
       };
       firebase.initializeApp(config);
     </script>
-    <script src="https://cdn.firebase.com/libs/firebaseui/1.0.1/firebaseui.js"></script>
+
+    <script src="https://cdn.firebase.com/libs/firebaseui/1.0.1/firebaseui.js">
+    </script>
+
     <link type="text/css" rel="stylesheet"
           href="https://cdn.firebase.com/libs/firebaseui/1.0.1/firebaseui.css" />
 
     <script type="text/javascript">
 
-    // FirebaseUI config
       var uiConfig = {
         callbacks: {
           signInSuccess: function(currentUser, credential, redirectUrl) {
-            // Do something.
-            // Return type determines whether we continue the redirect automatically
-            // or whether we leave that to developer to handle.
             return true;
           },
           uiShown: function() {
-            // The widget is rendered.
-            // Hide the loader.
             document.getElementById('loader').style.display = 'none';
           }
         },
 
         credentialHelper: firebaseui.auth.CredentialHelper.ACCOUNT_CHOOSER_COM,
-        // Query parameter name for mode.
         queryParameterForWidgetMode: 'mode',
-        // Query parameter name for sign in success url.
         queryParameterForSignInSuccessUrl: 'signInSuccessUrl',
         signInFlow: 'popup',
         signInSuccessUrl: 'https://baogorek.github.io/typingtutor/site/signed-in.html',

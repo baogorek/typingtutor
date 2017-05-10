@@ -32,17 +32,22 @@
       document.getElementById("github-token").textContent = github_token;
       var credential = firebase.auth.GithubAuthProvider.credential(github_token);
 
-      firebase.auth().signInWithCredential(credential).catch(function(error) {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        var email = error.email;
-        var credential = error.credential;
-      });
+      firebase.auth().signInWithCredential(credential);
       my_auth = firebase.auth();
       my_user = my_auth.currentUser;
-      firebase_token = my_user.getToken(); 
+      firebase_token = my_user.getToken().ra; 
 
       document.getElementById("firebase-token").textContent = firebase_token;
+
+      var xmlHttp = new XMLHttpRequest();
+      the_url = "https://typingtutor-9f7e9.firebaseio.com/with_chris.json?auth=" + 
+                 firebase_token;
+      xmlHttp.open("GET", the_url, false); // false for synchronous request
+      xmlHttp.send(null);
+      document.getElementById("data-sample").textContent = 
+        JSON.stringify(xmlHttp.responseText);
+    }
+
     }
     window.addEventListener('load', function() {
       initApp()
@@ -54,5 +59,6 @@
     <h1>The tokens will appear below</h1>
     <div id="github-token"></div>
     <div id="firebase-token"></div>
+    <div id="data-sample"></div>
   </body>
 </html>
