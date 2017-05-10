@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Sample FirebaseUI App</title>
+    <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyDFLZi6KGXURw8nibcJhGhN23-4vbMNV24",
+        authDomain: "typingtutor-9f7e9.firebaseapp.com",
+        databaseURL: "https://typingtutor-9f7e9.firebaseio.com",
+        projectId: "typingtutor-9f7e9",
+        storageBucket: "typingtutor-9f7e9.appspot.com",
+        messagingSenderId: "736144011972"
+      };
+
+      firebase.initializeApp(config);
+
+      function getParameterByName(name, url) {
+          if (!url) url = window.location.href;
+          name = name.replace(/[\[\]]/g, "\\$&");
+          var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+              results = regex.exec(url);
+          if (!results) return null;
+          if (!results[2]) return '';
+          return decodeURIComponent(results[2].replace(/\+/g, " "));
+      }
+
+    initApp = function() {
+      var github_token = getParameterByName('github');
+      document.getElementById("github-token").textContent = github_token;
+      var credential = firebase.auth.GithubAuthProvider.credential(github_token);
+
+      firebase.auth().signInWithCredential(credential).catch(function(error) {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        var email = error.email;
+        var credential = error.credential;
+      });
+      my_auth = firebase.auth();
+      my_user = my_auth.currentUser;
+      firebase_token = my_user.getToken(); 
+
+      document.getElementById("firebase-token").textContent = firebase_token;
+    }
+    window.addEventListener('load', function() {
+      initApp()
+    });
+
+    </script>
+  </head>
+  <body>
+    <h1>The tokens will appear below</h1>
+    <div id="github-token"></div>
+    <div id="firebase-token"></div>
+  </body>
+</html>
