@@ -42,14 +42,10 @@
             //window.location = "https://baogorek.github.io/typingtutor/"
             console.log("I am not supposed to appear");
           }
-        };
-
-      window.onload(function() {
-        initApp();
-      });
+      };
     </script>
   </head>
-  <body>
+  <body onload="initApp();">
     <h1>Welcome to My Awesome App</h1>
     <div id="sign-in-status"></div>
     <div id="firebase-token"></div>
