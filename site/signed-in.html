@@ -17,8 +17,9 @@
 
       initApp = function() {
         let url_params = new URL(window.location.href).searchParams;
-        firebase_token = url_params.get('token');
-        user = firebase.auth().currentUser;
+        var firebase_token = url_params.get('token');
+        var my_auth = firebase.auth();
+        var user = my_auth.currentUser;
           if (user) {
 
             document.getElementById('sign-in-status').textContent = 'Signed in';
@@ -45,7 +46,7 @@
       };
     </script>
   </head>
-  <body onload="initApp();">
+  <body onload="initApp();initApp();initApp();">
     <h1>Welcome to My Awesome App</h1>
     <div id="sign-in-status"></div>
     <div id="firebase-token"></div>
