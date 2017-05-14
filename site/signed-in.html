@@ -27,7 +27,6 @@
             document.getElementById('sign-in-status').textContent = 'Signed in';
             user.getToken().then(function(accessToken) {
               document.getElementById('firebase-token').textContent = accessToken;
-              window.location = "?token=" + accessToken;
             });
 
             var dbRefObject = firebase.database().ref().child('test_obj');
@@ -52,6 +51,8 @@
 
       window.addEventListener('load', function() {
         initApp()
+        var accessToken = document.getElementbyId('firebase-token').textContent; 
+        window.location = "?token=" + accessToken;
       });
     </script>
   </head>
