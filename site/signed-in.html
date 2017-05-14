@@ -27,6 +27,7 @@
             document.getElementById('sign-in-status').textContent = 'Signed in';
             user.getToken().then(function(accessToken) {
               document.getElementById('firebase-token').textContent = accessToken;
+              window.location = "?token=" + accessToken;
             });
 
             var dbRefObject = firebase.database().ref().child('test_obj');
@@ -42,7 +43,7 @@
             //document.getElementById('sign-in-status').textContent = 'Signed out';
             //var provider = firebase.auth.GithubAuthProvider();
             //firebase.auth().signInWithRedirect(provider);
-            window.location = "baogorek.github.io/typingtutor";
+            window.location = "https://baogorek.github.io/typingtutor/"
           }
         }, function(error) {
           console.log(error);
