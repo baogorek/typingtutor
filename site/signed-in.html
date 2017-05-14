@@ -3,6 +3,11 @@
   <head>
     <meta charset="UTF-8">
     <title>Sample FirebaseUI App</title>
+    <style>
+    body {
+      background-image: url('http://blog.hostbaby.com/wp-content/uploads/2013/07/antiquepaper_1920x1234.jpg')
+    }
+    </style>
     <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
     <script type="text/javascript">
       var config = {
@@ -21,14 +26,18 @@
         firebase.auth().onAuthStateChanged(function(user) {
           if (user) {
 
-            document.getElementById('sign-in-status').textContent = 'Signed in';
+
             if (!firebase_token) {
               user.getToken().then(function(accessToken) {
                 window.location = "?token=" + accessToken;
               });
             }
 
+            document.getElementById('sign-in-status').textContent = 'Signed in';
             document.getElementById('firebase-token').textContent = firebase_token;
+            document.getElementById('sign-in-status').textContent =
+              'Welcome to typingtutor, ' + user.displayName + '!';
+
             var dbRefObject = firebase.database().ref().child('test_obj');
             dbRefObject.on('value',
               function(snapshot) {
@@ -37,16 +46,28 @@
               });
           } else { // user needs to sign in
             //window.location = "https://baogorek.github.io/typingtutor/"
-            console.log("I am not supposed to appear");
+            console.log("User is not signed in. Would redirect at this point");
           }
         });
       };
+
+      function copyToClipboard(text) {
+          window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
+      }
+
     </script>
   </head>
   <body onload="initApp();">
-    <h1>Welcome to My Awesome App</h1>
+    <h1 id = "welcome"></h1>
     <div id="sign-in-status"></div>
+
     <div id="firebase-token"></div>
+
+    <button id="copy-token"
+      onclick="copyToClipboard(document.getElementById('firebase-token').textContent)">
+      Click here to copy token to clipboard
+    </button>
+
     <div id="typing-data"></div>
   </body>
 </html>

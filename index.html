@@ -2,7 +2,12 @@
 <html>
   <head>
   <meta charset="UTF-8">
-    <title>The typingtutor page</title>
+    <title>Companion page to the typingtutor R package</title>
+    <style>
+    body {
+      background-image: url('http://blog.hostbaby.com/wp-content/uploads/2013/07/antiquepaper_1920x1234.jpg')
+    }
+    </style>
 
     <script src="https://www.gstatic.com/firebasejs/3.8.0/firebase.js"></script>
     <script>
@@ -41,7 +46,6 @@
         signInFlow: 'popup',
         signInSuccessUrl: 'https://baogorek.github.io/typingtutor/site/signed-in.html',
         signInOptions: [
-          firebase.auth.GoogleAuthProvider.PROVIDER_ID,
           firebase.auth.GithubAuthProvider.PROVIDER_ID
         ],
         // Terms of service url.
@@ -60,20 +64,13 @@
     <h1>Leaderboard for typing tutor</h1>
     <div id="firebaseui-auth-container"></div>
 
-    <p>
-    This page's address is currently https://baogorek.github.io/typingtutor/.
-    It will be using features from https://console.firebase.google.com/.
-    </p>
-
     <div id="loader">Loading...</div>
 
+    <p>
+     Instructions to come...
+    </p>
 
-    https://developer.github.com/v3/oauth/
 
-    It looks like authorization using http should be pretty simple!
-    GET https://github.com/login/oauth/authorize
 
-    Here is my Github application:
-    https://github.com/settings/applications/519246
   </body>
 </html>
