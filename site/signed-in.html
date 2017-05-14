@@ -5,46 +5,46 @@
     <title>Sample FirebaseUI App</title>
     <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
     <script type="text/javascript">
-      //var config = {
-      //  apiKey: "AIzaSyDFLZi6KGXURw8nibcJhGhN23-4vbMNV24",
-      //  authDomain: "typingtutor-9f7e9.firebaseapp.com",
-      //  databaseURL: "https://typingtutor-9f7e9.firebaseio.com",
-      //  projectId: "typingtutor-9f7e9",
-      //  storageBucket: "typingtutor-9f7e9.appspot.com",
-      //  messagingSenderId: "736144011972"
-      //};
-      //firebase.initializeApp(config);
+      var config = {
+        apiKey: "AIzaSyDFLZi6KGXURw8nibcJhGhN23-4vbMNV24",
+        authDomain: "typingtutor-9f7e9.firebaseapp.com",
+        databaseURL: "https://typingtutor-9f7e9.firebaseio.com",
+        projectId: "typingtutor-9f7e9",
+        storageBucket: "typingtutor-9f7e9.appspot.com",
+        messagingSenderId: "736144011972"
+      };
+      firebase.initializeApp(config);
 
       initApp = function() {
-      let url_params = new URL(window.location.href).searchParams;
-      firebase_token = url_params.get('token');
-      user = firebase.auth().currentUser;
-        if (user) {
+        let url_params = new URL(window.location.href).searchParams;
+        firebase_token = url_params.get('token');
+        user = firebase.auth().currentUser;
+          if (user) {
 
-          document.getElementById('sign-in-status').textContent = 'Signed in';
-          if (!firebase_token) {
-            user.getToken().then(function(accessToken) {
-              window.location = "?token=" + accessToken;
-            });
+            document.getElementById('sign-in-status').textContent = 'Signed in';
+            if (!firebase_token) {
+              user.getToken().then(function(accessToken) {
+                window.location = "?token=" + accessToken;
+              });
+            }
+
+            document.getElementById('firebase-token').textContent = firebase_token;
+            var dbRefObject = firebase.database().ref().child('test_obj');
+            dbRefObject.on('value',
+              function(snapshot) {
+                document.getElementById('typing-data').textContent = JSON.stringify(snapshot.val());
+                console.log(snapshot.val());
+              });
+          } else { // user needs to sign in
+            //document.getElementById('sign-in-status').textContent = 'Signed out';
+            //var provider = firebase.auth.GithubAuthProvider();
+            //firebase.auth().signInWithRedirect(provider);
+            //window.location = "https://baogorek.github.io/typingtutor/"
+            console.log("I am not supposed to appear");
           }
+        };
 
-          document.getElementById('firebase-token').textContent = firebase_token;
-          var dbRefObject = firebase.database().ref().child('test_obj');
-          dbRefObject.on('value',
-            function(snapshot) {
-              document.getElementById('typing-data').textContent = JSON.stringify(snapshot.val());
-              console.log(snapshot.val());
-            });
-        } else { // user needs to sign in
-          //document.getElementById('sign-in-status').textContent = 'Signed out';
-          //var provider = firebase.auth.GithubAuthProvider();
-          //firebase.auth().signInWithRedirect(provider);
-          //window.location = "https://baogorek.github.io/typingtutor/"
-          console.log("I am not supposed to appear");
-        }
-      };
-
-      window.addEventListener('load', function() {
+      document.onload(function() {
         initApp();
       });
     </script>
