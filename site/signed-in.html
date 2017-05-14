@@ -53,7 +53,7 @@
         initApp()
       });
       document.onload = function() {
-        var accessToken = document.getElementbyId('firebase-token').textContent; 
+        var accessToken = document.getElementById('firebase-token').textContent; 
         window.location = "?token=" + accessToken;
       };
     </script>
