@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>Sample FirebaseUI App</title>
     <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
-    <script>
-      // Initialize Firebase
+    <script type="text/javascript">
+      initApp = function() {
       var config = {
         apiKey: "AIzaSyDFLZi6KGXURw8nibcJhGhN23-4vbMNV24",
         authDomain: "typingtutor-9f7e9.firebaseapp.com",
@@ -15,13 +15,6 @@
         messagingSenderId: "736144011972"
       };
       firebase.initializeApp(config);
-
-      // Get a reference to the database service
-
-    </script>
-    <script type="text/javascript">
-      initApp = function() {
-      //  firebase.auth().onAuthStateChanged(function(user) {
 
       let url_params = new URL(window.location.href).searchParams;
       firebase_token = url_params.get('token');
@@ -49,9 +42,6 @@
           //window.location = "https://baogorek.github.io/typingtutor/"
           console.log("I am not supposed to appear");
         }
-        //}, function(error) {
-        //  console.log(error);
-        //});
       };
 
       window.addEventListener('load', function() {
