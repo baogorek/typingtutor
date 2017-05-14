@@ -18,8 +18,7 @@
       initApp = function() {
         let url_params = new URL(window.location.href).searchParams;
         var firebase_token = url_params.get('token');
-        var my_auth = firebase.auth();
-        var user = my_auth.currentUser;
+        firebase.auth().onAuthStateChanged(function(user) {
           if (user) {
 
             document.getElementById('sign-in-status').textContent = 'Signed in';
@@ -37,16 +36,14 @@
                 console.log(snapshot.val());
               });
           } else { // user needs to sign in
-            //document.getElementById('sign-in-status').textContent = 'Signed out';
-            //var provider = firebase.auth.GithubAuthProvider();
-            //firebase.auth().signInWithRedirect(provider);
             //window.location = "https://baogorek.github.io/typingtutor/"
             console.log("I am not supposed to appear");
           }
+        });
       };
     </script>
   </head>
-  <body onload="initApp();initApp();initApp();">
+  <body onload="initApp();">
     <h1>Welcome to My Awesome App</h1>
     <div id="sign-in-status"></div>
     <div id="firebase-token"></div>
