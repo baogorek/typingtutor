@@ -24,8 +24,8 @@
       //  firebase.auth().onAuthStateChanged(function(user) {
 
       let url_params = new URL(window.location.href).searchParams;
-      var firebase_token = url_params.get('token');
-      var user = firebase.auth().currentUser;
+      firebase_token = url_params.get('token');
+      user = firebase.auth().currentUser;
         if (user) {
 
           document.getElementById('sign-in-status').textContent = 'Signed in';
@@ -46,7 +46,8 @@
           //document.getElementById('sign-in-status').textContent = 'Signed out';
           //var provider = firebase.auth.GithubAuthProvider();
           //firebase.auth().signInWithRedirect(provider);
-          window.location = "https://baogorek.github.io/typingtutor/"
+          //window.location = "https://baogorek.github.io/typingtutor/"
+          console.log("I am not supposed to appear");
         }
         //}, function(error) {
         //  console.log(error);
