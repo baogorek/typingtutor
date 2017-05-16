@@ -10,8 +10,8 @@ Depends:
     R (>= 3.3.2)
 Imports:
     httr,
-    crayon,
-    rvest
+    jsonlite,
+    crayon
 Suggests:
     testthat,
     covr
