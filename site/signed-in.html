@@ -64,9 +64,9 @@
     <div id="firebase-token"></div>
 
     <button id="copy-token"
-      onclick="copyToClipboard(
-      '{token:' + document.getElementById('firebase-token').textContent +
-      ', userid:' + firebase.auth().currentUser.uid + '}')">
+      onclick='copyToClipboard(
+      "{\"token\":\"" + document.getElementById("firebase-token").textContent +
+      "\", \"userid\":\"" + firebase.auth().currentUser.uid + "\"}")'>
       Click here to copy token to clipboard
     </button>
 
