@@ -41,7 +41,8 @@
             var dbRefObject = firebase.database().ref().child('test_obj');
             dbRefObject.on('value',
               function(snapshot) {
-                document.getElementById('typing-data').textContent = JSON.stringify(snapshot.val());
+                document.getElementById('typing-data').textContent =
+                  JSON.stringify(snapshot.val());
                 console.log(snapshot.val());
               });
           } else { // user needs to sign in
@@ -52,18 +53,20 @@
 
       function copyToClipboard(text) {
           window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
-      }
+      };
 
     </script>
   </head>
   <body onload="initApp();">
-    <h1 id = "welcome"></h1>
+    <h1><div id = "welcome"></div></h1>
     <div id="sign-in-status"></div>
 
     <div id="firebase-token"></div>
 
     <button id="copy-token"
-      onclick="copyToClipboard(document.getElementById('firebase-token').textContent)">
+      onclick="copyToClipboard(
+      '{token:' + document.getElementById('firebase-token').textContent +
+      ', userid:' + firebase.auth().currentUser.uid + '}')">
       Click here to copy token to clipboard
     </button>
 
