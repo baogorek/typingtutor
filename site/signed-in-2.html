@@ -35,7 +35,7 @@
 
             document.getElementById('sign-in-status').textContent = 'Signed in';
             document.getElementById('firebase-token').textContent = firebase_token;
-            document.getElementById('sign-in-status').textContent =
+            document.getElementById('welcome').textContent =
               'Welcome to typingtutor, ' + user.displayName + '!';
 
             var dbRefObject = firebase.database().ref().child('test_obj');
@@ -67,7 +67,7 @@
       onclick='copyToClipboard(
       "{\"token\":\"" + document.getElementById("firebase-token").textContent +
       "\", \"userid\":\"" + firebase.auth().currentUser.uid + "\"}")'>
-      Click here to copy token to clipboard
+      Click here to copy metadata to clipboard for use with R package
     </button>
 
     <div id="typing-data"></div>
