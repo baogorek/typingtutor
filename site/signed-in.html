@@ -4,8 +4,30 @@
     <meta charset="UTF-8">
     <title>Sample FirebaseUI App</title>
     <style>
-    body {
-      background-image: url('http://blog.hostbaby.com/wp-content/uploads/2013/07/antiquepaper_1920x1234.jpg')
+      body {
+        background-image: url('http://blog.hostbaby.com/wp-content/uploads/2013/07/antiquepaper_1920x1234.jpg')
+      }
+    .button {
+      display: inline-block;
+      padding: 15px 25px;
+      font-size: 24px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      outline: none;
+      color: #fff;
+      background-color: #4CAF50;
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 9px #999;
+    }
+    
+    .button:hover {background-color: #3e8e41}
+    
+    .button:active {
+      background-color: #3e8e41;
+      box-shadow: 0 5px #666;
+      transform: translateY(4px);
     }
     </style>
     <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
@@ -32,9 +54,8 @@
                 window.location = "?token=" + accessToken;
               });
             }
-
-            document.getElementById('sign-in-status').textContent = 'Signed in';
             document.getElementById('firebase-token').textContent = firebase_token;
+            document.getElementById('firebase-token').style.display = 'none';
             document.getElementById('welcome').textContent =
               'Welcome to typingtutor, ' + user.displayName + '!';
 
@@ -59,15 +80,14 @@
   </head>
   <body onload="initApp();">
     <h1><div id = "welcome"></div></h1>
-    <div id="sign-in-status"></div>
 
     <div id="firebase-token"></div>
 
-    <button id="copy-token"
+    <button class="button" id="copy-token"
       onclick='copyToClipboard(
       "{\"token\":\"" + document.getElementById("firebase-token").textContent +
       "\", \"userid\":\"" + firebase.auth().currentUser.uid + "\"}")'>
-      Click here to copy metadata to clipboard for use with R package
+      Click to copy authentication metadata
     </button>
 
     <div id="typing-data"></div>
