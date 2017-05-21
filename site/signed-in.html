@@ -44,17 +44,12 @@
 
       initApp = function() {
         let url_params = new URL(window.location.href).searchParams;
-        var firebase_token = url_params.get('token');
         firebase.auth().onAuthStateChanged(function(user) {
           if (user) {
 
-
-            if (!firebase_token) {
-              user.getToken().then(function(accessToken) {
-                window.location = "?token=" + accessToken;
-              });
-            }
-            document.getElementById('firebase-token').textContent = firebase_token;
+            user.getToken().then(function(accessToken) {
+              document.getElementById('firebase-token').textContent = accessToken;
+            });
             document.getElementById('firebase-token').style.display = 'none';
             document.getElementById('welcome').textContent =
               'Welcome to typingtutor, ' + user.displayName + '!';
@@ -76,6 +71,11 @@
           window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
       };
 
+      function refreshToken() {
+        user.getToken(true).then(function(accessToken) {
+          document.getElementById('firebase-token').textContent = accessToken;
+        });
+      };
     </script>
   </head>
   <body onload="initApp();">
@@ -84,7 +84,7 @@
     <div id="firebase-token"></div>
 
     <button class="button" id="copy-token"
-      onclick='copyToClipboard(
+      onclick='refreshToken();copyToClipboard(
       "{\"token\":\"" + document.getElementById("firebase-token").textContent +
       "\", \"userid\":\"" + firebase.auth().currentUser.uid + "\"}")'>
       Click to copy authentication metadata
