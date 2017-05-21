@@ -43,13 +43,12 @@
       firebase.initializeApp(config);
 
       initApp = function() {
-        // let url_params = new URL(window.location.href).searchParams;
         firebase.auth().onAuthStateChanged(function(user) {
           if (user) {
-
-            user.getToken(true).then(function(accessToken) {
-              document.getElementById('firebase-token').textContent = accessToken;
-            });
+            
+            //user.getToken().then(function(accessToken) {
+            //  document.getElementById('firebase-token').textContent = accessToken;
+            //});
             document.getElementById('firebase-token').style.display = 'none';
             document.getElementById('welcome').textContent =
               'Welcome to typingtutor, ' + user.displayName + '!';
@@ -74,6 +73,7 @@
       function refreshToken() {
         firebase.auth().currentUser.getToken(true).then(function(accessToken) {
           document.getElementById('firebase-token').textContent = accessToken;
+
         });
       };
     </script>
