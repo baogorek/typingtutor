@@ -43,11 +43,11 @@
       firebase.initializeApp(config);
 
       initApp = function() {
-        let url_params = new URL(window.location.href).searchParams;
+        // let url_params = new URL(window.location.href).searchParams;
         firebase.auth().onAuthStateChanged(function(user) {
           if (user) {
 
-            user.getToken().then(function(accessToken) {
+            user.getToken(true).then(function(accessToken) {
               document.getElementById('firebase-token').textContent = accessToken;
             });
             document.getElementById('firebase-token').style.display = 'none';
@@ -72,7 +72,7 @@
       };
 
       function refreshToken() {
-        user.getToken(true).then(function(accessToken) {
+        firebase.auth().currentUser.getToken(true).then(function(accessToken) {
           document.getElementById('firebase-token').textContent = accessToken;
         });
       };
