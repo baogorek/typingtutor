@@ -43,13 +43,14 @@
       firebase.initializeApp(config);
 
       initApp = function() {
+
+        document.getElementById('firebase-token').style.display = 'none';
         firebase.auth().onAuthStateChanged(function(user) {
           if (user) {
             
             //user.getToken().then(function(accessToken) {
             //  document.getElementById('firebase-token').textContent = accessToken;
             //});
-            document.getElementById('firebase-token').style.display = 'none';
             document.getElementById('welcome').textContent =
               'Welcome to typingtutor, ' + user.displayName + '!';
 
@@ -71,9 +72,15 @@
       };
 
       function refreshToken() {
-        firebase.auth().currentUser.getToken(true).then(function(accessToken) {
-          document.getElementById('firebase-token').textContent = accessToken;
-
+       firebase.auth().onAuthStateChanged(function(user) {
+          if (user) {
+            user.getToken(true).then(function(accessToken) {
+            document.getElementById('firebase-token').textContent = accessToken;
+            copyToClipboard("{\"token\":\"" + 
+              document.getElementById("firebase-token").textContent +
+              "\", \"userid\":\"" + firebase.auth().currentUser.uid + "\"}")
+            });
+          };
         });
       };
     </script>
@@ -84,9 +91,7 @@
     <div id="firebase-token"></div>
 
     <button class="button" id="copy-token"
-      onclick='refreshToken();copyToClipboard(
-      "{\"token\":\"" + document.getElementById("firebase-token").textContent +
-      "\", \"userid\":\"" + firebase.auth().currentUser.uid + "\"}")'>
+      onclick='refreshToken();'>
       Click to copy authentication metadata
     </button>
 
