@@ -81,8 +81,7 @@
             });
           };
         });
-        copyToClipboard("{\"token\":\"" + 
-          document.getElementById("firebase-token").textContent +
+        copyToClipboard("{\"token\":\"" + firebase_token +
           "\", \"userid\":\"" + firebase.auth().currentUser.uid + "\"}")
       };
     </script>
