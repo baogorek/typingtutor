@@ -72,17 +72,15 @@
       };
 
       function refreshToken() {
-       var firebase_token = "...loading...";
        firebase.auth().onAuthStateChanged(function(user) {
           if (user) {
-            user.getToken(true).then(function(accessToken) {
-              document.getElementById('firebase-token').textContent = accessToken;
-              var firebase_token = accessToken;
+            user.getToken().then(function(accessToken) {
+              //document.getElementById('firebase-token').textContent = accessToken;
+              copyToClipboard("{\"token\":\"" + accessToken +
+              "\", \"userid\":\"" + firebase.auth().currentUser.uid + "\"}")
             });
           };
         });
-        copyToClipboard("{\"token\":\"" + firebase_token +
-          "\", \"userid\":\"" + firebase.auth().currentUser.uid + "\"}")
       };
     </script>
   </head>
