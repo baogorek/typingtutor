@@ -21,7 +21,7 @@ get_net_wpm <- function(word_ct, errors_ct, time_in_sec) {
 #' @param repo Github repository address with format username/repo
 #'
 #' @return a list mapping R file names to github download urls
-get_r_files_from_github <- function(repo = "hadley/dplyr") {
+get_r_files_from_github <- function(repo = "tidyverse/dplyr") {
   r_dir_url <- paste0("https://api.github.com/repos/", repo, "/contents/R")
   response <- httr::GET(r_dir_url)
   r_files <- list() 
@@ -29,6 +29,17 @@ get_r_files_from_github <- function(repo = "hadley/dplyr") {
     r_files[[item$name]] <- item$download_url
   } 
   r_files
+}
+
+get_version_from_github <- function(repo) {
+  r_desc_url <- paste0("https://api.github.com/repos/", repo,
+                       "/contents/DESCRIPTION")
+  response <- httr::GET(r_desc_url)
+  response2 <- httr::GET(httr::content(response)$download_url)
+  desc_text <- httr::content(response2)
+  version_info <- grep("Version:", strsplit(desc_text, "\n")[[1]],
+                       ignore.case = TRUE, value = TRUE)
+  return(version_info)
 }
 
 display_files_for_selection <- function(r_files, max_char_per_line) {
@@ -122,70 +133,16 @@ evaluate_results <- function(results_df) {
   return(overall_net_wpm)
 }
 
-get_storage_location <- function() {
-  storage_location <- ""
-  if(".typing_storage" %in% names(.GlobalEnv)) {
-    if(!file.exists(.typing_storage)) {
-      warning(paste(".typing_storage contains invalid file path. Progress",
-                    "will not be saved!"))
-    } else {
-      cat("Storing typing results in", .typing_storage, "\n")
-      cat("based on .typing_storage variable\n")
-      storage_location <- .typing_storage
-    }
-  } else {
-    cat("\nWhere would you like to store your results?\n")
-    cat("local file path (press <Enter> to bypass saving):")
-    valid_path_entered <- FALSE
-    while (!valid_path_entered) {
-      storage_location <- gsub("\"|'", '', readline())
-      if (storage_location == "") {
-        cat("\nProgress will not be saved\n")
-        valid_path_entered <- TRUE
-      } else if (file.exists(storage_location)) {
-        cat("Storing typing results in", storage_location, "\n")
-        valid_path_entered <- TRUE
-      }
-      else {
-        cat(storage_location, "is not a valid file path. Please try again: ")
-      }
-    }
-    cat("\nTo avoid this message in the future, set .typing_storage to a valid")
-    cat("file path in your .Rprofile\n")
-    Sys.sleep(3)
-  }
-  return(storage_location)
-}
-
-get_history_from_storage <- function(storage_loc) {
-  storage_file <- file.path(storage_loc, "typing_history.csv")
-  if(file.exists(storage_file)) {
-    history_df <- read.csv(storage_file)
-    cat("getting history from storage\n")
-  } else {
-    history_df <- data.frame()
-    cat("creating new history dataset\n")
-  }
-  history_df
-}
-
-get_history <- function(storage_loc) {
-  if ("history_df" %in% names(.GlobalEnv)) {
-    history <- history_df
-    cat("\nUsing typing history from active session\n")
-  } else {
-    history <- get_history_from_storage(storage_loc)
-  }
-  history
-}
-
-perform_countdown <- function(start_pos = 3, pause = 1) {
+perform_countdown <- function(pause = 1) {
   cat("Ready?\n")
-  for (i in start_pos:1) {
-    cat(i, "\n")
-    Sys.sleep(pause)
-  }
-  cat("GO!\n")
+  cat(crayon::red("3"), "\n")
+  Sys.sleep(pause)
+  cat(crayon::yellow("2"), "\n")
+  Sys.sleep(pause)
+  cat(crayon::yellow("1"), "\n")
+  Sys.sleep(pause)
+  cat(crayon::green("GO!"), "\n")
+  Sys.sleep(.5)
 }
 
 #' Typing practice via R packages on Github
@@ -195,7 +152,7 @@ perform_countdown <- function(start_pos = 3, pause = 1) {
 #' words-per-minute calculations are presented to the user after each typed
 #' line and following the typing round.
 #'
-#' @param repo Which repo do you want to practice typing on ("hadley/dplyr") is
+#' @param repo Which repo do you want to practice typing on ("tidyverse/dplyr") is
 #'             the default
 #'
 #' @examples
@@ -204,19 +161,18 @@ perform_countdown <- function(start_pos = 3, pause = 1) {
 #'}
 #'
 #' @export
-type_github <- function(repo = "hadley/dplyr") {
-  storage_location <- get_storage_location()
-  history_df <- get_history(storage_location)
+type_github <- function(repo = "tidyverse/dplyr") {
   cat("\n...Getting R file information from Github\n")
+  version <- get_version_from_github(repo)
   r_files <- get_r_files_from_github(repo)
   user_choice <- get_user_choice(r_files)
-  perform_countdown(3, .7)
+  perform_countdown(1)
   results_df <- type_contents(r_files, user_choice)  
   net_wpm <- evaluate_results(results_df)
   cat("\nOverall Net WPM:", net_wpm, "\n")
-  history_df <<- rbind(history_df,
-                       data.frame(sys_time = as.numeric(Sys.time()),
-                                  repo = repo,
-                                  r_file = names(r_files)[user_choice],
-                                  wpm = net_wpm))
+  write_data_to_firebase(list(repo = repo,
+                              version = version,
+                              r_file = names(r_files)[user_choice],
+                              file_segment = 1,
+                              wpm = net_wpm))
 }
