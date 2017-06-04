@@ -1,6 +1,8 @@
 
 init <- function() {
   browseURL("https://baogorek.github.io/typingtutor/site/signed-in.html")
+  cat("If page did not automatically open, point a browser to:\n",
+      "https://baogorek.github.io/typingtutor/site/signed-in.html\n")
   refresh_token()
 }
 
@@ -22,6 +24,7 @@ refresh_token <- function() {
 }
 
 write_data_to_firebase <- function(data_in_list) {
+  if (!("firebase_env" %in% search())) init()
 
   ensure_user_exists_in_db(as.environment("firebase_env")$userid,
                            as.environment("firebase_env")$token)

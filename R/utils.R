@@ -60,13 +60,12 @@ display_files_for_selection <- function(r_files, max_char_per_line) {
   cat("--------------------------------------------\n")
   cat("Which R file would you like to practice on?\n")
   cat("Press <Enter> for random selection\n") 
-  cat("Selection:")
 }
 
 get_user_choice <- function(r_files, max_char_per_line = 30) {
 
   display_files_for_selection(r_files, max_char_per_line)
-  choice <- as.integer(readline())
+  choice <- as.integer(readline("Selection:"))
   if (choice %in% 1:length(r_files)) {
     cat("\nUser selected", names(r_files)[choice], "\n\n")
   }
@@ -77,32 +76,109 @@ get_user_choice <- function(r_files, max_char_per_line = 30) {
   choice
 }
 
+get_user_group_choice <- function(expr_groups) {
+  cat("Which expression group would you like to type?\n")
+  cat("----------------------------------------------\n")
+  for (i in 1:length(expr_groups)) {
+    cat(i, ":", names(expr_groups)[i], "\n")
+  }
+  choice <- as.integer(readline("Choice:"))
+  if (choice %in% 1:length(expr_groups)) {
+    cat("\nUser selected", names(expr_groups)[choice], "\n\n")
+  }
+  else {
+    choice <- sample(1:length(expr_groups), size = 1)
+    cat("\nRandomly selected", names(expr_groups)[choice], "\n\n")
+  }
+  choice
+}
+
 extract_roxygen_comments <- function(string_contents) {
   contents[grepl("^#'.*", string_contents)]
 }
 
-# TODO: create chunks of expressions that don't take too long to type
-type_contents <- function(r_files, choice) {
-  
-  expressions <- parse(r_files[[choice]])
-  deparsed_exprs <- lapply(expressions, deparse)
+get_deparsed_object <- function(parsed_expression, max_chars = 750) {
+  deparsed_exprs <- lapply(parsed_expression, deparse)
 
-  results_df <- data.frame()
-  for (j in 1:length(expressions)) {
-    expression_name <- deparse(expressions[[j]][[2]])
-    cat("\n On expression", j, "of", length(expressions), ":",
-        expression_name, "\n\n")
+  object <- list()
+  for (j in 1:length(deparsed_exprs)) {
     contents <- deparsed_exprs[[j]]
-    n_lines <- length(contents)
+    n_char = sum(nchar(contents))
+    truncated <- FALSE
+    if (n_char > max_chars) { 
+      contents <- contents[cumsum(nchar(contents)) < max_chars]
+      truncated <- TRUE
+    }
+    object[[j]] <- list(name = deparse(parsed_expression[[j]][[2]]),
+                        contents = contents,
+                        n_lines = length(contents),
+                        n_char = n_char,
+                        truncated = truncated)
+  }
+  return(object)
+} 
+
+get_grouped_exprs <- function(expr_object, max_group_chars = 1000) {
+  expr_sizes <- sapply(expr_object, FUN = function(x) x$n_char)
+  if (max(expr_sizes) > max_group_chars) {
+    stop("The max allowed chars for group must exceed that of largest expr!")
+  }
+  object <- list()
+  running_total <- 0
+  running_name <- ""
+  k <- 1
+  i <- 1
+  while_iter <- 0 # purely for debugging
+  group <- list()
+  while (i <= length(expr_object)) {
+    while_iter <- while_iter + 1
+    if (running_total + expr_object[[i]]$n_char <= max_group_chars) {
+      running_total <- running_total + expr_object[[i]]$n_char
+      running_name <- paste(running_name, expr_object[[i]]$name, sep = ";")
+      group[[k]] <- expr_object[[i]]
+      i <- i + 1 # increment input expression list index 
+      k <- k + 1 # increment position in current group list
+    } else {
+      object[[length(object) + 1]] <- group
+      names(object)[length(object)] <- substr(running_name, 2,
+                                              nchar(running_name))
+      k <- 1
+      running_total <- 0
+      running_name <- ""
+      group <- list()
+    }
+    if (while_iter > 2000) {
+      stop("This loop has been spinning for a while; something went wrong!")
+    }
+  }
+  if (running_total > 0) {
+     object[[length(object) + 1]] <- group
+     names(object)[length(object)] <- substr(running_name, 2,
+                                             nchar(running_name))
+  }
+  return(object)
+}
+
+#' Type contents of list of expressions
+#'
+#' @param expression_group list of expressions
+type_contents <- function(expression_group) {
+  
+  results_df <- data.frame()
+  for (j in 1:length(expression_group)) {
+    current_expr <- expression_group[[j]]
+    n_lines <- current_expr$n_lines
+    cat("\n On expression", j, "of", length(expression_group), ":",
+        current_expr$name, "\n\n")
  
-    expr_df <- data.frame(expression = rep(expression_name, n_lines),
+    expr_df <- data.frame(expression  = rep(current_expr$name, n_lines),
                           time_in_sec = numeric(n_lines),
-                          errors_ct = numeric(n_lines),
-                          word_ct = numeric(n_lines),
-                          net_wpm = numeric(n_lines))
+                          errors_ct   = numeric(n_lines),
+                          word_ct     = numeric(n_lines),
+                          net_wpm     = numeric(n_lines))
 
     for(i in 1:n_lines) {
-      line <- trimws(contents[i], "right") # trailing spaces can't hurt score
+      line <- trimws(current_expr$contents[i], "right") # rm trailing spaces
       n_leading_spaces <- nchar(line) - nchar(trimws(line, "left")) 
       space_buffer <- paste(rep(" ", n_leading_spaces), collapse = "")
 
@@ -166,13 +242,20 @@ type_github <- function(repo = "tidyverse/dplyr") {
   version <- get_version_from_github(repo)
   r_files <- get_r_files_from_github(repo)
   user_choice <- get_user_choice(r_files)
-  perform_countdown(1)
-  results_df <- type_contents(r_files, user_choice)  
+  expressions <- parse(r_files[[user_choice]])
+  deparsed <- get_deparsed_object(expressions)
+  grouped_exprs <- get_grouped_exprs(deparsed)
+  expr_group_choice <- get_user_group_choice(grouped_exprs)
+  # User choice for which expression group to type
+  perform_countdown(.7)
+  results_df <- type_contents(grouped_exprs[[expr_group_choice]])  
   net_wpm <- evaluate_results(results_df)
   cat("\nOverall Net WPM:", net_wpm, "\n")
-  write_data_to_firebase(list(repo = repo,
-                              version = version,
-                              r_file = names(r_files)[user_choice],
-                              file_segment = 1,
-                              wpm = net_wpm))
+  cat("Total time:", sum(results_df$time_in_sec), "seconds\n")
+  write_data_to_firebase(
+    list(repo             = repo,
+         version          = version,
+         r_file           = names(r_files)[user_choice],
+         expression_group = names(grouped_exprs)[expr_group_choice],
+         wpm              = net_wpm))
 }
