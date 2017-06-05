@@ -103,10 +103,11 @@ get_deparsed_object <- function(parsed_expression, max_chars = 750) {
   object <- list()
   for (j in 1:length(deparsed_exprs)) {
     contents <- deparsed_exprs[[j]]
-    n_char = sum(nchar(contents))
+    n_char <- sum(nchar(contents))
     truncated <- FALSE
     if (n_char > max_chars) { 
       contents <- contents[cumsum(nchar(contents)) < max_chars]
+      n_char <- sum(nchar(contents))
       truncated <- TRUE
     }
     object[[j]] <- list(name = deparse(parsed_expression[[j]][[2]]),
@@ -118,7 +119,7 @@ get_deparsed_object <- function(parsed_expression, max_chars = 750) {
   return(object)
 } 
 
-get_grouped_exprs <- function(expr_object, max_group_chars = 1000) {
+get_grouped_exprs <- function(expr_object, max_group_chars = 751) {
   expr_sizes <- sapply(expr_object, FUN = function(x) x$n_char)
   if (max(expr_sizes) > max_group_chars) {
     stop("The max allowed chars for group must exceed that of largest expr!")
@@ -247,15 +248,23 @@ type_github <- function(repo = "tidyverse/dplyr") {
   grouped_exprs <- get_grouped_exprs(deparsed)
   expr_group_choice <- get_user_group_choice(grouped_exprs)
   # User choice for which expression group to type
-  perform_countdown(.7)
+  perform_countdown(.5)
   results_df <- type_contents(grouped_exprs[[expr_group_choice]])  
   net_wpm <- evaluate_results(results_df)
   cat("\nOverall Net WPM:", net_wpm, "\n")
-  cat("Total time:", sum(results_df$time_in_sec), "seconds\n")
-  write_data_to_firebase(
-    list(repo             = repo,
-         version          = version,
-         r_file           = names(r_files)[user_choice],
-         expression_group = names(grouped_exprs)[expr_group_choice],
-         wpm              = net_wpm))
+  cat("Total time:", sum(results_df$time_in_sec), "seconds\n\n")
+
+  if (!("firebase_env" %in% search())) {
+    cat("Save progress via typingtutor web app?\n")
+    save_choice <- readline("y for yes, Enter to bypass:")
+    if (tolower(save_choice) %in% c("y", "yes")) init()
+  }
+  if ("firebase_env" %in% search()) {
+    write_data_to_firebase(
+      list(repo             = repo,
+           version          = version,
+           r_file           = names(r_files)[user_choice],
+           expression_group = names(grouped_exprs)[expr_group_choice],
+           wpm              = net_wpm))
+  }
 }

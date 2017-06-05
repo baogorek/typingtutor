@@ -4,7 +4,7 @@
 \alias{get_r_files_from_github}
 \title{Get R file name and url from github}
 \usage{
-get_r_files_from_github(repo = "hadley/dplyr")
+get_r_files_from_github(repo = "tidyverse/dplyr")
 }
 \arguments{
 \item{repo}{Github repository address with format username/repo}

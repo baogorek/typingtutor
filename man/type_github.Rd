@@ -4,10 +4,10 @@
 \alias{type_github}
 \title{Typing practice via R packages on Github}
 \usage{
-type_github(repo = "hadley/dplyr")
+type_github(repo = "tidyverse/dplyr")
 }
 \arguments{
-\item{repo}{Which repo do you want to practice typing on ("hadley/dplyr") is
+\item{repo}{Which repo do you want to practice typing on ("tidyverse/dplyr") is
 the default}
 }
 \description{

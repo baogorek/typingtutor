@@ -24,7 +24,8 @@ refresh_token <- function() {
 }
 
 write_data_to_firebase <- function(data_in_list) {
-  if (!("firebase_env" %in% search())) init()
+  #if (!("firebase_env" %in% search())) init()
+  cat("\nSaving data to https://baogorek.github.io/typingtutor\n")
 
   ensure_user_exists_in_db(as.environment("firebase_env")$userid,
                            as.environment("firebase_env")$token)
@@ -41,11 +42,12 @@ write_data_to_firebase <- function(data_in_list) {
   write_response <- httr::PATCH(write_url, body = data_to_write,
                                 encode = "json")
 
-  handle_response(write_response) 
-
+  if (write_response$status_code == 200) {
+    cat("Progress successfully saved!\n\n")
+  }
 }
 
-handle_response <- function(httr_response) {
+handle_get_content <- function(httr_response) {
 
   read_error_message <- ifelse("error" %in% names(httr_response),
                                query_data$error, "")
@@ -55,15 +57,16 @@ handle_response <- function(httr_response) {
   } else if (nchar(read_error_message) > 0) {
     stop(read_error_message)
   }
+
 }
 
 ensure_user_exists_in_db <- function(userid, token) {
   data_url <- paste0("https://typingtutor-9f7e9.firebaseio.com/user_info/",
                      userid, ".json?auth=", token)
 
-  read_request <- httr::GET(data_url, query = list(auth = token))
-  query_data <- httr::content(read_request)
-  handle_response(query_data)
+  read_response <- httr::GET(data_url, query = list(auth = token))
+  query_data <- httr::content(read_response)
+  handle_get_content(query_data)
 
   if (is.null(query_data)) {
   
