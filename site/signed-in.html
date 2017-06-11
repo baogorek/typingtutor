@@ -48,19 +48,27 @@
         firebase.auth().onAuthStateChanged(function(user) {
           if (user) {
             
-            //user.getToken().then(function(accessToken) {
-            //  document.getElementById('firebase-token').textContent = accessToken;
-            //});
             document.getElementById('welcome').textContent =
               'Welcome to typingtutor, ' + user.displayName + '!';
-
-            var dbRefObject = firebase.database().ref().child('test_obj');
+            
+            // Query the database for the user's records
+            var dbRefObject = firebase.database().ref().child("user_info/" + user.uid);
+            var typingData;
             dbRefObject.on('value',
               function(snapshot) {
-                document.getElementById('typing-data').textContent =
-                  JSON.stringify(snapshot.val());
-                console.log(snapshot.val());
+               typingData = snapshot.val();
+                var timestamps = Object.keys(typingData)
+                  .sort().reverse();
+                var timeLastEx = new Date(parseInt(timestamps[0].substring(1)));
+                var lastTry = 'The last time you played was on ' + timeLastEx +
+                  '<br/><br/> The file was ' + 
+                              typingData[timestamps[0]]['r_file'] +
+                              '<br/><br/> The expression group played was ' +
+                              typingData[timestamps[0]]['expression_group'] +
+                              '\n with wpm: ' + typingData[timestamps[0]]['wpm'];
+                document.getElementById('typing-data').innerHTML = lastTry;
               });
+            
           } else { // user needs to sign in
             window.location = "https://baogorek.github.io/typingtutor/"
           }
