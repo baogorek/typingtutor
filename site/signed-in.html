@@ -30,6 +30,7 @@
       transform: translateY(4px);
     }
     </style>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
     <script type="text/javascript">
       var config = {
@@ -53,7 +54,7 @@
             
             // Query the database for the user's records
             var dbRefObject = firebase.database().ref().child("user_info/" + user.uid);
-            var typingData;
+            var typingData; // For debugging;
             dbRefObject.on('value',
               function(snapshot) {
                typingData = snapshot.val();
@@ -67,8 +68,43 @@
                               typingData[timestamps[0]]['expression_group'] +
                               '\n with wpm: ' + typingData[timestamps[0]]['wpm'];
                 document.getElementById('typing-data').innerHTML = lastTry;
-              });
-            
+                //  transposing object
+                var exerciseInfo = {};
+                Object.entries(typingData).forEach(([key, value]) => {
+
+                  if (value['r_file'] && value['expression_group']) {
+                    var new_key = value['r_file'] + ':' + value['expression_group'];
+                    var new_value ={};
+                    new_value["datetime"] = new Date(parseInt(key.substring(1)));
+                    new_value["wpm"] = value["wpm"];
+                    if (exerciseInfo[new_key]) {
+                      exerciseInfo[new_key] = exerciseInfo[new_key].concat(new_value);
+                    } else {
+                      exerciseInfo[new_key] = [new_value];
+                    }
+                  }
+                });
+              // End transpose object
+
+                var myList = d3.select("body")
+                  .append("ul");
+                
+                myList.selectAll("li")
+                  .data(Object.keys(exerciseInfo))
+                  .enter()
+                    .append("li")
+                    .text(function(d) { return d;})
+                      .append("ul")
+                      .selectAll("li")
+                      .data(function(d) { return exerciseInfo[d] })
+                      .enter()
+                        .append("li")
+                        .text(function(d) { return d.datetime.toLocaleString() +
+                                           ': ' + d.wpm.toString();} );
+
+
+                });
+          );
           } else { // user needs to sign in
             window.location = "https://baogorek.github.io/typingtutor/"
           }
