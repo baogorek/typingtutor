@@ -52,24 +52,15 @@
             document.getElementById('welcome').textContent =
               'Welcome to typingtutor, ' + user.displayName + '!';
             
-            // Query the database for the user's records
             var dbRefObject = firebase.database().ref().child("user_info/" + user.uid);
-            var typingData; // For debugging;
+            var typingData;
+            var exerciseInfo = {};
+
             dbRefObject.on('value',
               function(snapshot) {
-               typingData = snapshot.val();
-                var timestamps = Object.keys(typingData)
-                  .sort().reverse();
-                var timeLastEx = new Date(parseInt(timestamps[0].substring(1)));
-                var lastTry = 'The last time you played was on ' + timeLastEx +
-                  '<br/><br/> The file was ' + 
-                              typingData[timestamps[0]]['r_file'] +
-                              '<br/><br/> The expression group played was ' +
-                              typingData[timestamps[0]]['expression_group'] +
-                              '\n with wpm: ' + typingData[timestamps[0]]['wpm'];
-                document.getElementById('typing-data').innerHTML = lastTry;
-                //  transposing object
-                var exerciseInfo = {};
+
+                // data manipulation
+                typingData = snapshot.val();
                 Object.entries(typingData).forEach(([key, value]) => {
 
                   if (value['r_file'] && value['expression_group']) {
@@ -84,9 +75,45 @@
                     }
                   }
                 });
-              // End transpose object
+                // End transpose object
+ 
+                var timestamps = Object.keys(typingData).sort().reverse();
+                var timeLastEx = new Date(parseInt(timestamps[0].substring(1)));
+                var lastTry = 'The last time you played was on ' + timeLastEx +
+                  '<br/><br/> The file was ' + 
+                              typingData[timestamps[0]]['r_file'] +
+                              '<br/><br/> The expression group played was ' +
+                              typingData[timestamps[0]]['expression_group'] +
+                              '\n with wpm: ' + typingData[timestamps[0]]['wpm'];
 
-                var myList = d3.select("body")
+
+                var last_object = typingData[timestamps[0]];
+                var last_key = last_object['r_file'] + ':' + last_object['expression_group'];
+
+                document.getElementById('last-try').innerHTML = lastTry + '\n\n' +
+                  JSON.stringify(exerciseInfo[last_key]);
+
+                var canvas = d3.select('last-try')
+                               .append('svg')
+                               .attr('width', 500)
+                               .attr('height', 500)
+                               .append('g')
+                               .attr('transform', 'translate(20, 0)');
+
+                var bars = canvas.selectAll('rect')
+                                 .data(exerciseInfo[last_key])
+                                 .enter()
+                                   .append('rect')
+                                   .attr('width', function(d) { return d.wpm })
+                                   .attr('height', 50)
+                                   .attr('fill', function(d) {return colorscale(d.wmp)})
+                                   .attr('y', function(d, i) { return i * 100; })
+                //canvas.append('g')
+                //      .attr('transform', 'translate(400, 0)')
+                //      .call('axis')
+               
+                document.getElementById('history').innerHTML = "";
+                var myList = d3.select("#history")
                   .append("ul");
                 
                 myList.selectAll("li")
@@ -137,6 +164,11 @@
       Click to copy authentication metadata
     </button>
 
-    <div id="typing-data"></div>
+    <h2> Your last try </h2>
+    <div id="last-try"></div>
+
+    <h2> Your typingtutor history </h2>
+    <div id="history"></div>
+
   </body>
 </html>
