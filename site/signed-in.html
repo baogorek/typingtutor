@@ -92,8 +92,17 @@
 
                 document.getElementById('last-try').innerHTML = lastTry + '\n\n' +
                   JSON.stringify(exerciseInfo[last_key]);
+                var widthScale = d3.scaleLinear()
+                                   .domain([0, 100])
+                                   .range([0, 500]);
 
-                var canvas = d3.select('last-try')
+                var colorScale = d3.scaleLinear()
+                                   .domain([0, 100])
+                                   .range(["blue", "red"]);
+                var axis = d3.axisBottom()
+                             .scale(widthScale);
+
+                var canvas = d3.select('#last-try-d3')
                                .append('svg')
                                .attr('width', 500)
                                .attr('height', 500)
@@ -104,13 +113,13 @@
                                  .data(exerciseInfo[last_key])
                                  .enter()
                                    .append('rect')
-                                   .attr('width', function(d) { return d.wpm })
+                                   .attr('width', function(d) { return widthScale(d.wpm) })
                                    .attr('height', 50)
-                                   .attr('fill', function(d) {return colorscale(d.wmp)})
+                                   .attr('fill', function(d) {return colorScale(d.wpm)})
                                    .attr('y', function(d, i) { return i * 100; })
-                //canvas.append('g')
-                //      .attr('transform', 'translate(400, 0)')
-                //      .call('axis')
+                canvas.append('g')
+                      .attr('transform', 'translate(0, 400)')
+                      .call(axis)
                
                 document.getElementById('history').innerHTML = "";
                 var myList = d3.select("#history")
@@ -166,6 +175,8 @@
 
     <h2> Your last try </h2>
     <div id="last-try"></div>
+
+    <div id="last-try-d3"></div>
 
     <h2> Your typingtutor history </h2>
     <div id="history"></div>
