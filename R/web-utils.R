@@ -50,7 +50,7 @@ write_data_to_firebase <- function(data_in_list) {
 handle_get_content <- function(httr_response) {
 
   read_error_message <- ifelse("error" %in% names(httr_response),
-                               query_data$error, "")
+                               httr_response$error, "")
   if (read_error_message == "Auth token is expired") {
     cat("Auth token is expired. Please enter token from refreshed page\n")
     init() 

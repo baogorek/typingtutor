@@ -92,6 +92,7 @@
 
                 document.getElementById('last-try').innerHTML = lastTry + '\n\n' +
                   JSON.stringify(exerciseInfo[last_key]);
+                document.getElementById('last-try-d3').innerHTML = '';
                 var widthScale = d3.scaleLinear()
                                    .domain([0, 100])
                                    .range([0, 500]);
