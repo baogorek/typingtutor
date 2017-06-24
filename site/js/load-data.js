@@ -18,7 +18,8 @@ initApp = function() {
       document.getElementById('welcome').textContent =
         'Welcome to typingtutor, ' + user.displayName + '!';
 
-      var dbRefObject = firebase.database().ref().child("user_info/" + user.uid);
+      var dbRefObject = firebase.database().ref()
+                          .child("user_info/" + user.uid);
       var typingData;
       var exerciseInfo = {};
 
@@ -52,42 +53,17 @@ initApp = function() {
                       typingData[timestamps[0]]['expression_group'] +
                       '\n with wpm: ' + typingData[timestamps[0]]['wpm'];
 
-
-
         var last_object = typingData[timestamps[0]];
-        var last_key = last_object['r_file'] + ':' + last_object['expression_group'];
+        var last_key = last_object['r_file'] + ':' +
+          last_object['expression_group'];
 
         document.getElementById('last-try').innerHTML = lastTry + '\n\n' +
           JSON.stringify(exerciseInfo[last_key]);
         document.getElementById('last-try-d3').innerHTML = '';
-        var widthScale = d3.scaleLinear()
-                                     .domain([0, 100])
-                                     .range([0, 500]);
-
-        var colorScale = d3.scaleLinear()
-                           .domain([0, 100])
-                           .range(["blue", "red"]);
-        var axis = d3.axisBottom()
-                     .scale(widthScale);
-
-        var canvas = d3.select('#last-try-d3')
-                       .append('svg')
-                       .attr('width', 500)
-                       .attr('height', 500)
-                       .append('g')
-                       .attr('transform', 'translate(20, 0)');
-
-        var bars = canvas.selectAll('rect')
-                         .data(exerciseInfo[last_key])
-                         .enter()
-                           .append('rect')
-                           .attr('width', function(d) { return widthScale(d.wpm) })
-                                       .attr('height', 50)
-                                       .attr('fill', function(d) {return colorScale(d.wpm)})
-                                       .attr('y', function(d, i) { return i * 100; })
-        canvas.append('g')
-              .attr('transform', 'translate(0, 400)')
-              .call(axis)
+        
+        var exerciseData = exerciseInfo[last_key];
+        exerciseData.reverse() // So the most recent bar is first
+        createBarChart(exerciseData)
 
         document.getElementById('history').innerHTML = "";
         var myList = d3.select("#history")
