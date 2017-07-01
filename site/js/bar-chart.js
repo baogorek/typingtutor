@@ -14,7 +14,7 @@ function createBarChart(exerciseData) {
 
   var widthScale = d3.scaleLinear()
                      .domain([0, 100]) // wpm scale
-                     .range([0, svg_width]); // pixel scale
+                     .range([0, svg_width - label_space]); // pixel scale
 
   var colorScale = d3.scaleLinear()
                      .domain([0, 100])
