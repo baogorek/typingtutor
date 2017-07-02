@@ -10,9 +10,9 @@ visit_site <- function() {
 }  
 
 init <- function() {
-  cat("In a browser, head to:\n",
+  cat("In a browser, head to:\n\n",
       "https://baogorek.github.io/typingtutor/site/signed-in.html\n",
-      "and report back with the copied 'authentication metadata' string!")
+      "and report back with the copied 'authentication metadata' string!\n\n")
   refresh_token()
 }
 

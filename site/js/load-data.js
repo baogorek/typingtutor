@@ -30,11 +30,12 @@ initApp = function() {
         var timestamps = Object.keys(typingData).sort().reverse();
         var last_obj = typingData[timestamps[0]];
         var timeLastEx = new Date(parseInt(timestamps[0].substring(1)));
-        var lastTryMsg = 'You last practiced typing the expression group <i>' +
-          typingData[timestamps[0]]['expression_group'] + '</i> from file <b>' +
-          typingData[timestamps[0]]['r_file'] + '</b> within repo <b>' +
-          typingData[timestamps[0]]['repo'] + '</b>. Your score was <b>' +
-          typingData[timestamps[0]]['wpm'] + '</b> words per minute!'
+        var lastTryMsg = 'You last practiced on repo <b>' +
+          typingData[timestamps[0]]['repo'] + '</b> with file <b>' +
+          typingData[timestamps[0]]['r_file'] + '</b> and expression group ' +
+          '<i>' + typingData[timestamps[0]]['expression_group'] + '</i>. ' +
+          'Your score was <b>' + Math.round(typingData[timestamps[0]]['wpm']) +
+          '</b> words per minute!';
 
         document.getElementById('last-try').innerHTML = lastTryMsg + '\n\n';
         document.getElementById('last-try-d3').innerHTML = '';
@@ -43,6 +44,7 @@ initApp = function() {
 
         var fileData = exerciseInfo[last_obj.repo][last_obj.r_file];
         var exerciseData = fileData[last_obj.expression_group];
+        exerciseData.sort(dateSort);
         createBarChart(exerciseData)
 
         document.getElementById('history').innerHTML = "";
@@ -53,7 +55,6 @@ initApp = function() {
     }
   }); // onAuthStateChanged
 };
-
 
 function createHistoryList(exerciseInfo) {
   // Creates html list of previous activities organized by repo, file, and group
@@ -95,13 +96,20 @@ function createHistoryList(exerciseInfo) {
                 .selectAll("li")
                 .data(function(obj) {
                    return exerciseInfo[obj.repo][obj.file][obj.group]
-                          .reverse();
+                          .sort(dateSort)
                 })
                 .enter()
                   .append("li")
                   .text(function(d) {return d.datetime.toLocaleString() + ': ' +
                                             Math.round(d.wpm);})
+}
 
+function dateSort(a, b) {
+  if (a.datetime < b.datetime) {
+    return 1;
+  } else {
+    return 0;
+  }
 }
 
 function transpose(typingData) {

@@ -12,6 +12,11 @@
   <body onload="initApp();">
     <h1><div id = "welcome"></div></h1>
 
+    <button class="button" id="sign-out"
+      onclick='firebase.auth().signOut;'>
+      Sign out
+    </button>
+
     <div id="firebase-token"></div>
 
     <button class="button" id="copy-token"
