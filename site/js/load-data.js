@@ -43,8 +43,7 @@ initApp = function() {
         var exerciseInfo = transpose(typingData); 
 
         var fileData = exerciseInfo[last_obj.repo][last_obj.r_file];
-        var exerciseData = fileData[last_obj.expression_group];
-        exerciseData.sort(dateSort);
+        var exerciseData = fileData[last_obj.expression_group].sort(dateSort);
         createBarChart(exerciseData)
 
         document.getElementById('history').innerHTML = "";
@@ -54,105 +53,4 @@ initApp = function() {
       window.location = "https://baogorek.github.io/typingtutor/"
     }
   }); // onAuthStateChanged
-};
-
-function createHistoryList(exerciseInfo) {
-  // Creates html list of previous activities organized by repo, file, and group
-  var myList = d3.select("#history")
-    .append("ul");
-
-  myList.selectAll("li")
-    .data(Object.keys(exerciseInfo))
-    .enter()
-      .append("li")
-      .text(function(repo) {return repo}) // prints repo
-        .append("ul")
-        .selectAll("li")
-        .data(function(repo) {
-          my_array = [];
-          Object.keys(exerciseInfo[repo]).forEach(function(element) {
-            my_array.push({'repo':repo, 'file':element});
-            });
-          return my_array;
-        })
-          .enter()
-          .append("li")
-          .text(function(d) {return d.file;})
-            .append("ul")
-            .selectAll("li")
-            .data(function(obj) {
-              my_array = [];
-              Object.keys(exerciseInfo[obj.repo][obj.file]).forEach(
-                function(element) {
-                  my_array.push({'repo':obj.repo, 'file':obj.file,
-                                 'group':element})
-                });
-              return my_array;
-            })
-            .enter()
-              .append("li") 
-              .text(function(d) {return d.group})
-                .append("ul")
-                .selectAll("li")
-                .data(function(obj) {
-                   return exerciseInfo[obj.repo][obj.file][obj.group]
-                          .sort(dateSort)
-                })
-                .enter()
-                  .append("li")
-                  .text(function(d) {return d.datetime.toLocaleString() + ': ' +
-                                            Math.round(d.wpm);})
-}
-
-function dateSort(a, b) {
-  if (a.datetime < b.datetime) {
-    return 1;
-  } else {
-    return 0;
-  }
-}
-
-function transpose(typingData) {
-  // turns a timestamp-based key structure into a exercise-level structure 
-  var exerciseInfo = {};
-  Object.entries(typingData).forEach(([key, value]) => {
-
-    if (value['repo'] && value['r_file'] && value['expression_group']) {
-      if (!exerciseInfo[value['repo']]) {
-        exerciseInfo[value['repo']] = {};
-      } 
-      if (!exerciseInfo[value['repo']][value['r_file']]) {
-        exerciseInfo[value['repo']][value['r_file']] = {};
-      }
-      var new_key = value['expression_group'];
-      var new_value ={};
-      new_value["datetime"] = new Date(parseInt(key.substring(1)));
-      new_value["wpm"] = value["wpm"];
-
-      if (exerciseInfo[value['repo']][value['r_file']][new_key]) {
-        exerciseInfo[value['repo']][value['r_file']][new_key] =
-          exerciseInfo[value['repo']][value['r_file']][new_key]
-            .concat(new_value);
-      } else {
-        exerciseInfo[value['repo']][value['r_file']][new_key] = [new_value];
-      }
-    }
-  });
-  return exerciseInfo;
-};
-
-function copyToClipboard(text) {
-    window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
-};
-
-function refreshToken() {
- firebase.auth().onAuthStateChanged(function(user) {
-    if (user) {
-      user.getToken().then(function(accessToken) {
-        //document.getElementById('firebase-token').textContent = accessToken;
-        copyToClipboard("{\"token\":\"" + accessToken +
-        "\", \"userid\":\"" + firebase.auth().currentUser.uid + "\"}")
-      });
-    };
-  });
 };
