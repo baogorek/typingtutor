@@ -26,9 +26,9 @@ initApp = function() {
         function(snapshot) {
 
         typingData = snapshot.val();
-        var last_obj = typingData[timestamps[0]];
 
         var timestamps = Object.keys(typingData).sort().reverse();
+        var last_obj = typingData[timestamps[0]];
         var timeLastEx = new Date(parseInt(timestamps[0].substring(1)));
         var lastTryMsg = 'You last practiced typing the expression group <i>' +
           typingData[timestamps[0]]['expression_group'] + '</i> from file <b>' +

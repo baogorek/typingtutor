@@ -1,14 +1,24 @@
 
-init <- function() {
+#' Visit typingtutor's companion website
+#'
+#' Uses utils::browseURL to launch a browser with destination
+#' \url{https://baogorek.github.io/typingtutor/site/signed-in.html}
+#'
+#' @export 
+visit_site <- function() {
   browseURL("https://baogorek.github.io/typingtutor/site/signed-in.html")
-  cat("If page did not automatically open, point a browser to:\n",
-      "https://baogorek.github.io/typingtutor/site/signed-in.html\n")
+}  
+
+init <- function() {
+  cat("In a browser, head to:\n",
+      "https://baogorek.github.io/typingtutor/site/signed-in.html\n",
+      "and report back with the copied 'authentication metadata' string!")
   refresh_token()
 }
 
 refresh_token <- function() {
 
-  user_input <- readline("Paste token from browser and press enter:")
+  user_input <- readline("Paste 'authentication metadata' and press enter:")
   firebase_metadata <- jsonlite::fromJSON(user_input)
 
   while ("firebase_env" %in% search()) {  
@@ -24,7 +34,6 @@ refresh_token <- function() {
 }
 
 write_data_to_firebase <- function(data_in_list) {
-  #if (!("firebase_env" %in% search())) init()
   cat("\nSaving data to https://baogorek.github.io/typingtutor\n")
 
   ensure_user_exists_in_db(as.environment("firebase_env")$userid,

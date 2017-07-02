@@ -4,11 +4,12 @@
 
 .onAttach <- function(libname, pkgname) {
   if (interactive()) {
-    packageStartupMessage("run the command `type_github()` to start typing!")
+    packageStartupMessage("Enter `type_github()` to start typing!")
+    packageStartupMessage("Enter `visit_site()` to visit companion website!")
     if (!crayon::has_color()){
-      packageStartupMessage(paste("\nANSI color support is not available. Windows",
-                                  "users\n may wish to try the ConEmu",
-                                  "terminal emulator"))
+      msg <- paste("\nANSI color support is not available. Windows users may",
+                   "wish to try the ConEmu terminal emulator")
+      packageStartupMessage(msg)
     }
   }
 }
