@@ -26,6 +26,7 @@ initApp = function() {
         function(snapshot) {
 
         typingData = snapshot.val();
+        var last_obj = typingData[timestamps[0]];
 
         var timestamps = Object.keys(typingData).sort().reverse();
         var timeLastEx = new Date(parseInt(timestamps[0].substring(1)));
@@ -35,18 +36,13 @@ initApp = function() {
           typingData[timestamps[0]]['repo'] + '</b>. Your score was <b>' +
           typingData[timestamps[0]]['wpm'] + '</b> words per minute!'
 
-
         document.getElementById('last-try').innerHTML = lastTryMsg + '\n\n';
         document.getElementById('last-try-d3').innerHTML = '';
-        
-        var last_object = typingData[timestamps[0]];
-        var last_key = last_object['repo'] + ':' + last_object['r_file'] + ':' +
-          last_object['expression_group'];
 
         var exerciseInfo = transpose(typingData); 
 
-        var exerciseData = exerciseInfo[last_key];
-        exerciseData.reverse() // So the most recent bar is first
+        var fileData = exerciseInfo[last_obj.repo][last_obj.r_file];
+        var exerciseData = fileData[last_obj.expression_group];
         createBarChart(exerciseData)
 
         document.getElementById('history').innerHTML = "";
@@ -61,7 +57,6 @@ initApp = function() {
 
 function createHistoryList(exerciseInfo) {
   // Creates html list of previous activities organized by repo, file, and group
-  //d3.select("#history").selectAll("*").remove()
   var myList = d3.select("#history")
     .append("ul");
 
