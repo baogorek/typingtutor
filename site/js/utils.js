@@ -1,9 +1,5 @@
 function dateSort(a, b) {
-  if (a.datetime < b.datetime) {
-    return 1;
-  } else {
-    return 0;
-  }
+  return Math.sign(2 * (a.datetime.getTime() < b.datetime.getTime()) - 1);
 }
 
 function transpose(typingData) {

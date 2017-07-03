@@ -43,8 +43,9 @@ initApp = function() {
         var exerciseInfo = transpose(typingData); 
 
         var fileData = exerciseInfo[last_obj.repo][last_obj.r_file];
-        var exerciseData = fileData[last_obj.expression_group].sort(dateSort);
-        createBarChart(exerciseData)
+        var exerciseData = fileData[last_obj.expression_group];
+        exerciseData.sort(dateSort);
+        createBarChart(exerciseData);
 
         document.getElementById('history').innerHTML = "";
         createHistoryList(exerciseInfo);
