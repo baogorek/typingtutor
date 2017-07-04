@@ -47,3 +47,15 @@ function refreshToken() {
   });
 };
 
+function getDbRef(user) {
+  var user_data;
+  user_ref = firebase.database().ref().child("user_info/" + user.uid);
+  user_ref.on('value', function(snapshot) {user_data = snapshot.val()});
+  if (!user_data) {
+    console.log("no user data found! Creating database entry");
+    return undefined;
+  } else {
+    return user_ref;
+  }
+}
+
