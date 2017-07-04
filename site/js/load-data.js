@@ -29,8 +29,9 @@ initApp = function() {
 };
 
 function fillInPage(snapshot) {
-
-  typingData = snapshot.val()['user_info'][user.uid];
+  if (snapshot.val()['user_info']) {
+    typingData = snapshot.val()['user_info'][user.uid];
+  }
   
   if (typingData) {
     var timestamps = Object.keys(typingData).sort().reverse();
