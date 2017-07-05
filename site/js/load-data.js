@@ -20,7 +20,7 @@ initApp = function() {
 
       var snapData; // for debugging help
       var dbRefObject = firebase.database().ref();
-      dbRefObject.on('value', fillInPage);
+      dbRefObject.on('value', function(snap){ fillInPage(snap, user)});
 
       } else { // user needs to sign in
       window.location = "https://baogorek.github.io/typingtutor/"
@@ -28,7 +28,7 @@ initApp = function() {
   });
 };
 
-function fillInPage(snapshot) {
+function fillInPage(snapshot, user) {
   snapData = snapshot.val();
   var typingData;
 
