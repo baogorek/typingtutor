@@ -29,6 +29,8 @@ initApp = function() {
 };
 
 function fillInPage(snapshot) {
+  var typingData;
+
   if (snapshot.val()['user_info']) {
     typingData = snapshot.val()['user_info'][user.uid];
   }
