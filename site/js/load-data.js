@@ -18,7 +18,7 @@ initApp = function() {
       document.getElementById('welcome').textContent =
         'Welcome to typingtutor, ' + user.displayName + '!';
 
-      var typingData; // for debugging help
+      var snapData; // for debugging help
       var dbRefObject = firebase.database().ref();
       dbRefObject.on('value', fillInPage);
 
@@ -29,6 +29,7 @@ initApp = function() {
 };
 
 function fillInPage(snapshot) {
+  snapData = snapshot.val();
   var typingData;
 
   if (snapshot.val()['user_info']) {
