@@ -18,9 +18,9 @@ initApp = function() {
       document.getElementById('welcome').textContent =
         'Welcome to typingtutor, ' + user.displayName + '!';
 
-      var snapData; // for debugging help
-      var dbRefObject = firebase.database().ref();
-      dbRefObject.on('value', function(snap){ fillInPage(snap, user)});
+      var typingData; // for debugging help
+      var dbRefObject = firebase.database().ref('user_info/' + user.uid);
+      dbRefObject.on('value', fillInPage);
 
       } else { // user needs to sign in
       window.location = "https://baogorek.github.io/typingtutor/"
@@ -28,13 +28,9 @@ initApp = function() {
   });
 };
 
-function fillInPage(snapshot, user) {
-  snapData = snapshot.val();
-  var typingData;
-
-  if (snapshot.val()['user_info']) {
-    typingData = snapshot.val()['user_info'][user.uid];
-  }
+function fillInPage(snapshot) {
+  
+  typingData = snapshot.val();
   
   if (typingData) {
     var timestamps = Object.keys(typingData).sort().reverse();
