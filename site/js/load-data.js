@@ -17,7 +17,7 @@ initApp = function() {
       var at_index = user.email.indexOf("@");
       var user_display = user.email.substring(0, at_index);
       if (user.displayName) {
-        user_display = user.display_name;
+        user_display = user.displayName;
       } 
       document.getElementById('welcome').textContent =
         'Welcome to typingtutor, ' + user_display + '!';
