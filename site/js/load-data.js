@@ -14,9 +14,13 @@ initApp = function() {
   document.getElementById('firebase-token').style.display = 'none';
   firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
-
+      var at_index = user.email.indexOf("@");
+      var user_display = user.email.substring(0, at_index);
+      if (user.displayName) {
+        user_display = user.display_name;
+      } 
       document.getElementById('welcome').textContent =
-        'Welcome to typingtutor, ' + user.displayName + '!';
+        'Welcome to typingtutor, ' + user_display + '!';
 
       var typingData; // for debugging help
       var dbRefObject = firebase.database().ref('user_info/' + user.uid);
