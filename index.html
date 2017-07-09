@@ -69,11 +69,70 @@
     <p><img src="site/images/demo.gif" alt="" /></p>
 
 
-    <p>
-     Instructions to come...
-    </p>
+   <h2 id="installation">Installation</h2>
 
+<p>As <em>typingtutor</em> is only available on Github, the easiest way to install it is
+via <a href="https://github.com/hadley/devtools">devtools</a>:</p>
 
+<pre><code>install.packages("devtools")
+devtools::install_github("baogorek/typingtutor")
+</code></pre>
+
+<!-- Begin paste from Markdown to HTML converter -->
+<h2 id="usage">Usage</h2>
+
+<p>After starting R, load the typingtutor library:</p>
+
+<pre><code>library(typingtutor)
+</code></pre>
+
+<p>To practice typing on the Github repo <em>tidyverse/dplyr</em>, simply enter</p>
+
+<pre><code>type_github()
+</code></pre>
+
+<p>or, for another repo, enter the Github repository path as an argument:</p>
+
+<pre><code>type_github("stefvanbuuren/mice")
+</code></pre>
+
+<p>The user is presented with a choice of R files and then groups of R expressions
+within those files for which to type on. A maximum of 1000 characters will be
+presented to the user, and functions longer than 1000 characters are truncated.</p>
+
+<h2 id="thetypingtutorcompanionwebpage">The typingtutor companion webpage</h2>
+
+<p>You can always get to the
+<a href="https://baogorek.github.io/typingtutor/site/signed-in.html">typingtutor companion website</a>
+by typing <code>visit_site()</code> in R or by visiting</p>
+
+<pre><code>https://baogorek.github.io/typingtutor/site/signed-in.html
+</code></pre>
+
+<p>which will redirect to</p>
+
+<pre><code>https://baogorek.github.io/typingtutor/
+</code></pre>
+
+<p>if the user is not signed in. Currently, a
+<a href="https://github.com/join">Github account</a> is required for
+authentication to the typingtutor companion page.</p>
+
+<h3 id="savingdata">Saving data</h3>
+
+<p>After practicing on a typing tutor expression group, the user will be given the
+option to save to the typingtutor companion page. For the first time in every
+new R session, the user will have to enter a "authentication metadata string"
+at a prompt. Once signed into the typingtutor companion webpage, this is
+accomplished by clicking the green button, pressing CTRL + C and Enter, and
+pasting the resulting string back into the R prompt.</p>
+
+<p><img src="site/images/auth-metadata.png" alt="" /></p>
+
+<p>Saving is optional, and the user may use the typingtutor without ever saving
+to the typingtutor companion webpage.</p> 
+
+<!-- End paste from Markdown to HTML converter  -->
 
   </body>
 </html>
