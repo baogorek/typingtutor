@@ -65,7 +65,7 @@ display_files_for_selection <- function(r_files, max_char_per_line) {
 get_user_choice <- function(r_files, max_char_per_line = 30) {
 
   display_files_for_selection(r_files, max_char_per_line)
-  choice <- as.integer(readline("Selection:"))
+  choice <- suppressWarnings(as.integer(readline("Selection:")))
   if (choice %in% 1:length(r_files)) {
     cat("\nUser selected", names(r_files)[choice], "\n\n")
   }
@@ -82,7 +82,7 @@ get_user_group_choice <- function(expr_groups) {
   for (i in 1:length(expr_groups)) {
     cat(i, ":", names(expr_groups)[i], "\n")
   }
-  choice <- as.integer(readline("Choice:"))
+  choice <- suppressWarnings(as.integer(readline("Choice:")))
   if (choice %in% 1:length(expr_groups)) {
     cat("\nUser selected", names(expr_groups)[choice], "\n\n")
   }

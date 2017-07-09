@@ -10,15 +10,14 @@ visit_site <- function() {
 }  
 
 init <- function() {
-  cat("In a browser, head to:\n\n",
-      "https://baogorek.github.io/typingtutor/site/signed-in.html\n",
-      "and report back with the copied 'authentication metadata' string!\n\n")
+  cat("\nIn a browser, head to:\n\n",
+      "https://baogorek.github.io/typingtutor/site/signed-in.html\n\n")
   refresh_token()
 }
 
 refresh_token <- function() {
 
-  user_input <- readline("Paste 'authentication metadata' and press enter:")
+  user_input <- readline("Copy & paste 'authentication metadata':")
   firebase_metadata <- jsonlite::fromJSON(user_input)
 
   while ("firebase_env" %in% search()) {  
@@ -63,5 +62,4 @@ handle_get_content <- function(httr_response) {
   } else if (nchar(read_error_message) > 0) {
     stop(read_error_message)
   }
-
 }
