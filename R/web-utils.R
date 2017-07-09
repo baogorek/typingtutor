@@ -36,9 +36,6 @@ refresh_token <- function() {
 write_data_to_firebase <- function(data_in_list) {
   cat("\nSaving data to https://baogorek.github.io/typingtutor\n")
 
-  ensure_user_exists_in_db(as.environment("firebase_env")$userid,
-                           as.environment("firebase_env")$token)
-
   write_url <- paste0("https://typingtutor-9f7e9.firebaseio.com/user_info/",
                       as.environment("firebase_env")$userid, ".json?auth=",
                       as.environment("firebase_env")$token)
@@ -67,26 +64,4 @@ handle_get_content <- function(httr_response) {
     stop(read_error_message)
   }
 
-}
-
-ensure_user_exists_in_db <- function(userid, token) {
-  data_url <- paste0("https://typingtutor-9f7e9.firebaseio.com/user_info/",
-                     userid, ".json?auth=", token)
-
-  read_response <- httr::GET(data_url, query = list(auth = token))
-  query_data <- httr::content(read_response)
-  handle_get_content(query_data)
-
-  if (is.null(query_data)) {
-  
-    write_url <- paste0("https://typingtutor-9f7e9.firebaseio.com/user_info",
-                        ".json", "?auth=", token)
-    data_to_write <- list(userid = "placeholder")
-    names(data_to_write) <- userid
-
-    write_response <- httr::PUT(write_url,
-                                body = data_to_write,
-                                encode = "json")
-    print(write_response)
-  }
 }
