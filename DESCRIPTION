@@ -1,13 +1,13 @@
 Package: typingtutor
 Title: Typing tutor and R package familiarizer
-Version: 0.9.0
+Version: 0.9.1
 Authors@R: person("Ben", "Ogorek", email = "baogorek@gmail.com", role = c("aut", "cre"))
 Description: typingtutor is an R package that provides typing exercises based
     on R packages on github. Its purpose is to increase the user's speed of
     typing in general and typing R code in particular, with the side bonus of
     gaining familiarity with the code underlying successful R packages.
 Depends:
-    R (>= 3.3.2)
+    R (>= 3.2.2)
 Imports:
     httr,
     jsonlite,
