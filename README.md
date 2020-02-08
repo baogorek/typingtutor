@@ -13,7 +13,7 @@ on R packages on github. Its purpose is to increase the user's speed of
 typing in general and typing R code in particular, with the side bonus of
 gaining familiarity with the code underlying successful R packages.
 
-[![The typingtutor website](site/images/demo.gif "Click to visit")*The typingtutor website*][https://baogorek.github.io/typingtutor/site/signed-in.html]
+[![The typingtutor website](site/images/demo.gif "Click to visit")*The typingtutor website*](https://baogorek.github.io/typingtutor/site/signed-in.html)
 
 
 ## Installation
