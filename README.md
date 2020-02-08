@@ -16,6 +16,8 @@ gaining familiarity with the code underlying successful R packages.
 
 ![](site/images/demo.gif)
 
+[![The typingtutor website](site/images/demo.gif "Click to visit")*The typingtutor website*][(https://baogorek.github.io/typingtutor/site/signed-in.html]
+
 
 ## Installation
 As *typingtutor* is only available on Github, the easiest way to install it is
